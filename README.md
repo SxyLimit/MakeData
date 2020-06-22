@@ -41,21 +41,21 @@
 
 ## MakeArray(ll \*array,int l,int r,ll num_l,ll num_r)
 
-对于 ![](https://latex.codecogs.com/svg.latex?array_l\sim array_r) 中的元素随机给出一个 ![](https://latex.codecogs.com/svg.latex?[num\_l,num\_r]) 范围内的整数.
+对于 ![](https://latex.codecogs.com/svg.latex?array_l\sim%20array_r) 中的元素随机给出一个 ![](https://latex.codecogs.com/svg.latex?[num\_l,num\_r]) 范围内的整数.
 
 ## MakeArray(ll \*array,int l,int r,ll(\*MakeNum)())
 
-对于 ![](https://latex.codecogs.com/svg.latex?array_l\sim array_r) 中的元素都用 `MakeNum()` 赋值一次.
+对于 ![](https://latex.codecogs.com/svg.latex?array_l\sim%20array_r) 中的元素都用 `MakeNum()` 赋值一次.
 
 ## MakeString(char \*s,int l,int r,char t[])
 
-对于 ![](https://latex.codecogs.com/svg.latex?s_l\sim s_r) 中的元素都等概率随机给出 `t[]` 中的元素.
+对于 ![](https://latex.codecogs.com/svg.latex?s_l\sim%20s_r) 中的元素都等概率随机给出 `t[]` 中的元素.
 
 其中如果 `t="abb"`,那么对于 ![](https://latex.codecogs.com/svg.latex?s) 中的每个元素出现 `a` 的概率为 ![](https://latex.codecogs.com/svg.latex?\frac{1}{3}),出现 `b` 的概率为 ![](https://latex.codecogs.com/svg.latex?\frac{2}{3}).
 
 ## MakeArray(int \*array,int n)
 
-对于 ![](https://latex.codecogs.com/svg.latex?array_1\sim array_n) 中的元素随机给出一个 ![](https://latex.codecogs.com/svg.latex?1\sim n) 的排列($1\sim n) 中每个元素有且出现一次但是没有顺序).
+对于 ![](https://latex.codecogs.com/svg.latex?array_1\sim%20array_n) 中的元素随机给出一个 ![](https://latex.codecogs.com/svg.latex?1\sim%20n) 的排列(![](https://latex.codecogs.com/svg.latex?1\sim%20n) 中每个元素有且出现一次但是没有顺序).
 
 ## MakeRange(int &l,int &r,int range_l,int range_r)
 
