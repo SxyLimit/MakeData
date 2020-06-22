@@ -47,21 +47,21 @@
 
 对于 ![](https://latex.codecogs.com/svg.latex?array_l\sim%20array_r) 中的元素都用 `MakeNum()` 赋值一次.
 
+## MakeArray(int \*array,int n)
+
+对于 ![](https://latex.codecogs.com/svg.latex?array_1\sim%20array_n) 中的元素随机给出一个 ![](https://latex.codecogs.com/svg.latex?1\sim%20n) 的排列(![](https://latex.codecogs.com/svg.latex?1\sim%20n) 中每个元素有且出现一次但是没有顺序).
+
 ## MakeString(char \*s,int l,int r,char t[])
 
 对于 ![](https://latex.codecogs.com/svg.latex?s_l\sim%20s_r) 中的元素都等概率随机给出 `t[]` 中的元素.
 
 其中如果 `t="abb"`,那么对于 ![](https://latex.codecogs.com/svg.latex?s) 中的每个元素出现 `a` 的概率为 ![](https://latex.codecogs.com/svg.latex?\frac{1}{3}),出现 `b` 的概率为 ![](https://latex.codecogs.com/svg.latex?\frac{2}{3}).
 
-## MakeArray(int \*array,int n)
-
-对于 ![](https://latex.codecogs.com/svg.latex?array_1\sim%20array_n) 中的元素随机给出一个 ![](https://latex.codecogs.com/svg.latex?1\sim%20n) 的排列(![](https://latex.codecogs.com/svg.latex?1\sim%20n) 中每个元素有且出现一次但是没有顺序).
-
 ## MakeRange(int &l,int &r,int range_l,int range_r)
 
-将 ![](https://latex.codecogs.com/svg.latex?l,r) 变成 ![](https://latex.codecogs.com/svg.latex?[range\_l,range\_r]) 内的随机一个整数,且严格保证 ![](https://latex.codecogs.com/svg.latex?l\leq r).
+将 ![](https://latex.codecogs.com/svg.latex?l,r) 变成 ![](https://latex.codecogs.com/svg.latex?[range\_l,range\_r]) 内的随机一个整数,且严格保证 ![](https://latex.codecogs.com/svg.latex?l\leq%20r).
 
-## MakeTree(int *father,int n,int root,int opt)
+## MakeTree(int \*father,int n,int root,int opt)
 
 制造一颗树,其中 ![](https://latex.codecogs.com/svg.latex?root) 的默认值为 ![](https://latex.codecogs.com/svg.latex?1$,$opt) 的默认值为 ![](https://latex.codecogs.com/svg.latex?0).
 
