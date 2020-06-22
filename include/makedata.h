@@ -7,6 +7,10 @@
 #define RAND_LONG_LONG Random(-5e17,5e17)
 #define _RAND_INT Random(0,1e9)
 #define _RAND_LONG_LONG Random(0,1e18)
+#define _abc_ 'a','z'
+#define _ABC_ 'A','Z'
+#define NUM '0','9'
+#define CHAR 32,126
 namespace MD
 {
 	unsigned long long seed;
@@ -32,6 +36,14 @@ namespace MD
 	long long Random(long long f,long long e)
 	{
 		return f+Random(e-f+1);
+	}
+	char RandomChar(char l,char r)
+	{
+		return (char)Random(l,r);
+	}
+	char RandomChar(char s[])
+	{
+		return s[Random(strlen(s))];
 	}
 	void MakeArray(long long *array,int l,int r,long long num_l,long long num_r)
 	{
@@ -61,14 +73,6 @@ namespace MD
 			array[i]=MakeNum();
 		}
 	}
-	void MakeString(char *s,int l,int r,char t[])
-	{
-		int len=strlen(t);
-		REP(i,l,r)
-		{
-			s[i]=t[Random(len)];
-		}
-	}
 	void MakeArray(int *array,int n)
 	{
 		memset(array,0,sizeof(array));
@@ -77,6 +81,14 @@ namespace MD
 			array[i]=i;
 		}
 		std::random_shuffle(array+1,array+1+n);
+	}
+	void MakeString(char *s,int l,int r,char t[])
+	{
+		int len=strlen(t);
+		REP(i,l,r)
+		{
+			s[i]=t[Random(len)];
+		}
 	}
 	void MakeRange(int &l,int &r,int range_l,int range_r)
 	{
@@ -93,7 +105,7 @@ namespace MD
 			std::swap(l,r);
 		}
 	}
-	void MakeTree(int *father,int n,int root,int opt)
+	void MakeTree(int *father,int n,int root=1,int opt=0)
 	{
 		memset(father,0,sizeof(father));
 		if(n==1)
@@ -138,13 +150,12 @@ namespace MD
 			}
 		}
 	}
-	char RandomChar(char l,char r)
+	void WriteArray(long long array[],int l,int r,char s[2]=" \n")
 	{
-		return (char)Random(l,r);
-	}
-	char RandomChar(char s[])
-	{
-		return s[Random(strlen(s))];
+		REP(i,l,r)
+		{
+			printf("%lld%c",array[i],s[i==r]);
+		}
 	}
 	void WriteArray(int array[],int l,int r,char s[2]=" \n")
 	{
@@ -171,6 +182,7 @@ namespace MD
 			{
 				if(Random(2))
 				{
+					printf("%d %d\n",tree[i].father,tree[i].son);
 				}
 				else
 				{
