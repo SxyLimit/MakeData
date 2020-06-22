@@ -1,4 +1,4 @@
-# MakeData
+# MakeData.h
 
 一个用于生成数据的库
 
@@ -84,3 +84,13 @@
 输出一颗树.
 
 输出有 ![](https://latex.codecogs.com/svg.latex?n-1) 行,每行包含两个数字 ![](https://latex.codecogs.com/svg.latex?a,b),表示在 ![](https://latex.codecogs.com/svg.latex?a,b) 中有一条边,其中 ![](https://latex.codecogs.com/svg.latex?father) 数组必须保证在 ![](https://latex.codecogs.com/svg.latex?1\sim%20n) 的范围内有且只有一个 ![](https://latex.codecogs.com/svg.latex?0),且必须为一颗树,否则不保证输出正确,建议用 `MakeTree()` 来生成所需的树.
+
+# make.bat
+
+一个可以和 makedata.h 一起使用的批处理文件.
+
+## 使用方法
+
+makedata.exe,std.exe,make.bat 放在同一目录下,并运行 bat 文件,其中的 ![](https://latex.codecogs.com/svg.latex?l) 和 ![](https://latex.codecogs.com/svg.latex?r) 为数据的编号范围 ![](https://latex.codecogs.com/svg.latex?l.cpp\sim%20r.cpp).
+
+其中的 std 和 makedata 都不需要读入输出文件.
