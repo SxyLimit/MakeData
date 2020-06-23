@@ -4,9 +4,9 @@
 #define DOW(i,first,last) for(int i=first;i>=last;--i)
 
 #define RAND_INT Random(-1e9,1e9)
-#define RAND_LONG_LONG Random(-5e17,5e17)
+#define RAND_LL Random(-5e17,5e17)
 #define _RAND_INT Random(0,1e9)
-#define _RAND_LONG_LONG Random(0,1e18)
+#define _RAND_LL Random(0,1e18)
 #define _abc_ 'a','z'
 #define _ABC_ 'A','Z'
 #define NUM '0','9'
