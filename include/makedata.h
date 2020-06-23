@@ -52,9 +52,9 @@ namespace MD
 			array[i]=Random(num_l,num_r);
 		}
 	}
-	void MakeArray(int *array,int l,int r,int num_l,int num_r)
+	void MakeArray(long long *array,int n,long long num_l,long long num_r)
 	{
-		REP(i,l,r)
+		REP(i,1,n)
 		{
 			array[i]=Random(num_l,num_r);
 		}
@@ -66,16 +66,15 @@ namespace MD
 			array[i]=MakeNum();
 		}
 	}
-	void MakeArray(int *array,int l,int r,int(*MakeNum)())
+	void MakeArray(long long *array,int n,long long(*MakeNum)())
 	{
-		REP(i,l,r)
+		REP(i,1,n)
 		{
 			array[i]=MakeNum();
 		}
 	}
 	void MakeArray(int *array,int n)
 	{
-		memset(array,0,sizeof(array));
 		REP(i,1,n)
 		{
 			array[i]=i;
@@ -84,13 +83,21 @@ namespace MD
 	}
 	void MakeString(char *s,int l,int r,char t[])
 	{
-		int len=strlen(t);
+		int lent=strlen(t);
 		REP(i,l,r)
 		{
-			s[i]=t[Random(len)];
+			s[i]=t[Random(lent)];
 		}
 	}
-	void MakeRange(int &l,int &r,int range_l,int range_r)
+	void MakeString(char *s,int len,char t[])
+	{
+		int lent=strlen(t);
+		REP(i,0,len-1)
+		{
+			s[i]=t[Random(lent)];
+		}
+	}
+	void MakeRange(long long &l,long long &r,long long range_l,long long range_r)
 	{
 		long long len=range_r-range_l+1;
 		if(Random(1,len*(len+1))<=len-1)
@@ -105,9 +112,10 @@ namespace MD
 			std::swap(l,r);
 		}
 	}
-	void MakeTree(int *father,int n,int root=1,int opt=0)
+	int point[10000005];
+	int out[10000005];
+	void MakeTree(int *father,int n,int root=1,int opt=0,int k=2)
 	{
-		memset(father,0,sizeof(father));
 		if(n==1)
 		{
 			return;
@@ -137,7 +145,6 @@ namespace MD
 					std::swap(father[a],father[b]);
 				}
 			}
-			father[root]=0;
 		}
 		if(opt==2)
 		{
@@ -149,19 +156,34 @@ namespace MD
 				}
 			}
 		}
+		if(opt==3)
+		{
+			REP(i,1,n)
+			{
+				point[i]=i;
+				out[i]=0;
+			}
+			std::random_shuffle(point+1,point+1+n);
+			REP(i,1,n)
+			{
+				if(point[i]^root)
+				{
+					father[point[i]]=Random(1,n);
+					while(out[father[point[i]]]==k)
+					{
+						father[point[i]]=Random(1,n);
+					}
+					out[father[point[i]]]++;
+				}
+			}
+		}
+		father[root]=0;
 	}
 	void WriteArray(long long array[],int l,int r,char s[2]=" \n")
 	{
 		REP(i,l,r)
 		{
 			printf("%lld%c",array[i],s[i==r]);
-		}
-	}
-	void WriteArray(int array[],int l,int r,char s[2]=" \n")
-	{
-		REP(i,l,r)
-		{
-			printf("%d%c",array[i],s[i==r]);
 		}
 	}
 	struct Tree
