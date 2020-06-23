@@ -43,9 +43,17 @@
 
 对于 ![](https://latex.codecogs.com/svg.latex?array_l\sim%20array_r) 中的元素随机给出一个 ![](https://latex.codecogs.com/svg.latex?[num\_l,num\_r]) 范围内的整数.
 
+## MakeArray(ll \*array,int n,ll num_l,ll num_r)
+
+相当于 `MakeArray(array,1,n,num_l,num_r)`.
+
 ## MakeArray(ll \*array,int l,int r,ll(\*MakeNum)())
 
 对于 ![](https://latex.codecogs.com/svg.latex?array_l\sim%20array_r) 中的元素都用 `MakeNum()` 赋值一次.
+
+## MakeArray(ll \*array,int n,ll(\*MakeNum)())
+
+相当于 `MakeArray(array,1,n,MakeNum())`.
 
 ## MakeArray(int \*array,int n)
 
@@ -57,21 +65,24 @@
 
 其中如果 `t="abb"`,那么对于 ![](https://latex.codecogs.com/svg.latex?s) 中的每个元素出现 `a` 的概率为 ![](https://latex.codecogs.com/svg.latex?\frac{1}{3}),出现 `b` 的概率为 ![](https://latex.codecogs.com/svg.latex?\frac{2}{3}).
 
+## MakeString(char \*s,int len,char t[])
+
+相当于 `MakeString(s,0,len-1,char t[])`.
+
 ## MakeRange(int &l,int &r,int range_l,int range_r)
 
 将 ![](https://latex.codecogs.com/svg.latex?l,r) 变成 ![](https://latex.codecogs.com/svg.latex?[range\_l,range\_r]) 内的随机一个整数,且严格保证 ![](https://latex.codecogs.com/svg.latex?l\leq%20r).
 
-## MakeTree(int \*father,int n,int root,int opt)
+## MakeTree(int \*father,int n,int root,int opt,int k)
 
-制造一颗树,其中 ![](https://latex.codecogs.com/svg.latex?root) 的默认值为 ![](https://latex.codecogs.com/svg.latex?1$,$opt) 的默认值为 ![](https://latex.codecogs.com/svg.latex?0).
+制造一颗树,其中 ![](https://latex.codecogs.com/svg.latex?root) 的默认值为 ![](https://latex.codecogs.com/svg.latex?1),![](https://latex.codecogs.com/svg.latex?opt) 的默认值为 ![](https://latex.codecogs.com/svg.latex?0),![](https://latex.codecogs.com/svg.latex?k) 的默认值为 ![](https://latex.codecogs.com/svg.latex?2).
 
 对于不同的 ![](https://latex.codecogs.com/svg.latex?opt=):
 
 0. 随机生成一颗以 ![](https://latex.codecogs.com/svg.latex?root) 为根的树.
-
 1. 随机生成一颗以 ![](https://latex.codecogs.com/svg.latex?root) 为根的树,且保证这棵树是一条链
-
-2. 生成一颗以 ![](https://latex.codecogs.com/svg.latex?root) 为根的菊花(即 ![](https://latex.codecogs.com/svg.latex?root) 的度为 ![](https://latex.codecogs.com/svg.latex?n-1).
+2. 生成一颗以 ![](https://latex.codecogs.com/svg.latex?root) 为根的菊花图(即 ![](https://latex.codecogs.com/svg.latex?root) 的度为 ![](https://latex.codecogs.com/svg.latex?n-1).
+3. 生成一颗以 ![](https://latex.codecogs.com/svg.latex?root) 为根的 ![](https://latex.codecogs.com/svg.latex?k) 叉树(即每个点的儿子个数小于等于 ![](https://latex.codecogs.com/svg.latex?k),默认生成的是二叉树)
 
 ## WriteArray(ll \*array,int l,int r,char s[2])
 
