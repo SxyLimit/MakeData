@@ -11,9 +11,26 @@
 #define _ABC_ 'A','Z'
 #define NUM '0','9'
 #define CHAR 32,126
+std::vector<int>null_vector;
+struct Graph
+{
+	std::vector<std::vector<int> >out_point;
+	Graph(int n)
+	{
+		REP(i,0,n)
+		{
+			out_point.push_back(null_vector);
+		}
+	}
+	void AddEdge(int form,int to)
+	{
+		out_point[form].push_back(to);
+	}
+};
+#define FOR(edge,now) for(int edge_i=0,to=edge.out_point[now].size()?edge.out_point[now][0]:0;edge_i<edge.out_point[now].size();edge_i++,to=edge.out_point[now][edge_i])
 namespace MD
 {
-	unsigned long long seed;
+	unsigned long long seed=233;
 	void Srand(unsigned long long a=time(NULL))
 	{
 		seed=a;
@@ -24,6 +41,7 @@ namespace MD
 	void Begin()
 	{
 		Sleep(1000);
+		srand(time(NULL));
 		Srand();
 	}
 	long long Random(long long a)
@@ -41,7 +59,7 @@ namespace MD
 	{
 		return (char)Random(l,r);
 	}
-	char RandomChar(char s[])
+	char RandomChar(char *s)
 	{
 		return s[Random(strlen(s))];
 	}
@@ -81,7 +99,7 @@ namespace MD
 		}
 		std::random_shuffle(array+1,array+1+n);
 	}
-	void MakeString(char *s,int l,int r,char t[])
+	void MakeString(char *s,int l,int r,char *t)
 	{
 		int lent=strlen(t);
 		REP(i,l,r)
@@ -89,7 +107,7 @@ namespace MD
 			s[i]=t[Random(lent)];
 		}
 	}
-	void MakeString(char *s,int len,char t[])
+	void MakeString(char *s,int len,char *t)
 	{
 		int lent=strlen(t);
 		REP(i,0,len-1)
@@ -177,38 +195,74 @@ namespace MD
 				}
 			}
 		}
+		if(opt==4)
+		{
+			REP(i,1,n)
+			{
+				point[i]=i;
+			}
+			std::swap(point[1],point[root]);
+			std::random_shuffle(point+2,point+1+n);
+			REP(i,2,n)
+			{
+				father[point[i]]=point[i/2];
+			}
+		}
 		father[root]=0;
 	}
-	void WriteArray(long long array[],int l,int r,char s[2]=" \n")
+	void WriteArray(long long *array,int l,int r,char s[2]=" \n")
 	{
 		REP(i,l,r)
 		{
 			printf("%lld%c",array[i],s[i==r]);
 		}
 	}
-	struct Tree
+	std::vector<std::pair<int,int> >edge;
+	void WriteTree(int *father,int n)
 	{
-		int father,son;
-	}tree[10000005];
-	void WriteTree(int father[],int n)
-	{
+		edge.clear();
 		REP(i,1,n)
 		{
-			tree[i].father=father[i];
-			tree[i].son=i;
+			edge.push_back(std::make_pair(father[i],i));
 		}
-		std::random_shuffle(tree+1,tree+1+n);
+		std::random_shuffle(edge.begin(),edge.end());
 		REP(i,1,n)
 		{
-			if(tree[i].father)
+			if(edge[i].first)
 			{
 				if(Random(2))
 				{
-					printf("%d %d\n",tree[i].father,tree[i].son);
+					printf("%d %d\n",edge[i].first,edge[i].second);
 				}
 				else
 				{
-					printf("%d %d\n",tree[i].son,tree[i].father);
+					printf("%d %d\n",edge[i].second,edge[i].first);
+				}
+			}
+		}
+	}
+	void WriteGraph(Graph &a)
+	{
+		edge.clear();
+		REP(i,1,a.out_point.size())
+		{
+			FOR(a,i)
+			{
+				edge.push_back(std::make_pair(i,to));
+			}
+		}
+		std::random_shuffle(edge.begin(),edge.end());
+		if(edge.size())
+		{
+			REP(i,0,edge.size()-1)
+			{
+				if(Random(2))
+				{
+					printf("%d %d\n",edge[i].first,edge[i].second);
+				}
+				else
+				{
+					printf("%d %d\n",edge[i].second,edge[i].first);
 				}
 			}
 		}
