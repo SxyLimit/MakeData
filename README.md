@@ -105,3 +105,9 @@
 makedata.exe,std.exe,make.bat 放在同一目录下,并运行 bat 文件,其中的 ![](https://latex.codecogs.com/svg.latex?l) 和 ![](https://latex.codecogs.com/svg.latex?r) 为数据的编号范围 ![](https://latex.codecogs.com/svg.latex?l.cpp\sim%20r.cpp).
 
 其中的 std 和 makedata 都不需要读入输出文件.
+
+# 近期推出(完善)
+
+建各种图,用于存图的结构体(树的部分也会使用).
+
+欢迎联系 QQ2303504461 提出建议.
