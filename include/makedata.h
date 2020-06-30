@@ -15,7 +15,7 @@ std::vector<int>null_vector;
 struct Graph
 {
 	std::vector<std::vector<int> >out_point;
-	Graph(int n)
+	Graph(int n=0)
 	{
 		REP(i,0,n)
 		{
@@ -25,6 +25,10 @@ struct Graph
 	void AddEdge(int form,int to)
 	{
 		out_point[form].push_back(to);
+	}
+	void Clean()
+	{
+		out_point.clear();
 	}
 };
 #define FOR(edge,now) for(int edge_i=0,to=edge.out_point[now].size()?edge.out_point[now][0]:0;edge_i<edge.out_point[now].size();edge_i++,to=edge.out_point[now][edge_i])
@@ -130,38 +134,65 @@ namespace MD
 			std::swap(l,r);
 		}
 	}
-	int point[10000005];
-	int out[10000005];
-	void MakeTree(int *father,int n,int root=1,int opt=0,int k=2)
+	std::vector<int>f;
+	std::vector<int>father;
+	int Find(int now)
 	{
-		if(n==1)
+		if(now==f[now])
+		{
+			return now;
+		}
+		return f[now]=Find(f[now]);
+	}
+	void MakeTree(Graph &a,int n,int root=1,int opt=0,int k=2)
+	{
+		a=Graph(n);
+		if(n<2)
 		{
 			return;
 		}
 		if(opt==0)
 		{
+			f.clear();
+			REP(i,0,n)
+			{
+				f.push_back(i);
+			}
+			int father;
 			REP(i,1,n)
 			{
 				if(i^root)
 				{
-					father[i]=Random(1,n);
+					father=Random(1,n);
+					while(Find(father)==Find(i))
+					{
+						father=Random(1,n);
+					}
+					a.AddEdge(father,i);
+					a.AddEdge(i,father);
 				}
+				f[Find(i)]=Find(father);
 			}
 		}
 		if(opt==1)
 		{
+			father.clear();
 			REP(i,1,n)
 			{
-				father[i]=i%n+1;
+				father.push_back(i);
 			}
-			REP(i,1,n)
+			std::random_shuffle(father.begin(),father.end());
+			REP(i,0,father.size()-1)
 			{
-				int a=Random(1,n);
-				int b=Random(1,n);
-				if(father[a]^b&&father[b]^a)
+				if(father[i]==root)
 				{
-					std::swap(father[a],father[b]);
+					std::swap(father[i],father[0]);
 				}
+			}
+			REP(i,1,father.size()-1)
+			{
+				a.AddEdge(father[i-1],father[i]);
+				a.AddEdge(father[i],father[i-1]);
 			}
 		}
 		if(opt==2)
@@ -170,45 +201,52 @@ namespace MD
 			{
 				if(i^root)
 				{
-					father[i]=root;
+					a.AddEdge(i,root);
+					a.AddEdge(root,i);
 				}
 			}
 		}
 		if(opt==3)
 		{
-			REP(i,1,n)
+			f.clear();
+			father.clear();
+			REP(i,0,n)
 			{
-				point[i]=i;
-				out[i]=0;
+				f.push_back(i);
+				father.push_back(0);
 			}
-			std::random_shuffle(point+1,point+1+n);
+			int fa;
 			REP(i,1,n)
 			{
-				if(point[i]^root)
+				if(i^root)
 				{
-					father[point[i]]=Random(1,n);
-					while(out[father[point[i]]]==k)
+					fa=Random(1,n);
+					while(Find(fa)==Find(i)||father[fa]==k)
 					{
-						father[point[i]]=Random(1,n);
+						fa=Random(1,n);
 					}
-					out[father[point[i]]]++;
+					father[fa]++;
+					f[Find(i)]=Find(fa);
+					a.AddEdge(fa,i);
+					a.AddEdge(i,fa);
 				}
 			}
 		}
 		if(opt==4)
 		{
-			REP(i,1,n)
+			father.clear();
+			REP(i,0,n)
 			{
-				point[i]=i;
+				father.push_back(i);
 			}
-			std::swap(point[1],point[root]);
-			std::random_shuffle(point+2,point+1+n);
+			std::swap(father[1],father[root]);
+			std::random_shuffle(father.begin()+2,father.end());
 			REP(i,2,n)
 			{
-				father[point[i]]=point[i/2];
+				a.AddEdge(father[i],father[i/2]);
+				a.AddEdge(father[i/2],father[i]);
 			}
 		}
-		father[root]=0;
 	}
 	void WriteArray(long long *array,int l,int r,char s[2]=" \n")
 	{
@@ -218,37 +256,28 @@ namespace MD
 		}
 	}
 	std::vector<std::pair<int,int> >edge;
-	void WriteTree(int *father,int n)
+	void WriteGraph(Graph &a,int opt=0)
 	{
-		edge.clear();
-		REP(i,1,n)
+		if(!a.out_point.size())
 		{
-			edge.push_back(std::make_pair(father[i],i));
+			return;
 		}
-		std::random_shuffle(edge.begin(),edge.end());
-		REP(i,1,n)
-		{
-			if(edge[i].first)
-			{
-				if(Random(2))
-				{
-					printf("%d %d\n",edge[i].first,edge[i].second);
-				}
-				else
-				{
-					printf("%d %d\n",edge[i].second,edge[i].first);
-				}
-			}
-		}
-	}
-	void WriteGraph(Graph &a)
-	{
 		edge.clear();
-		REP(i,1,a.out_point.size())
+		REP(i,1,a.out_point.size()-1)
 		{
 			FOR(a,i)
 			{
-				edge.push_back(std::make_pair(i,to));
+				if(opt==1)
+				{
+					if(i<to)
+					{
+						edge.push_back(std::make_pair(i,to));
+					}
+				}
+				if(opt==0)
+				{
+					edge.push_back(std::make_pair(i,to));
+				}
 			}
 		}
 		std::random_shuffle(edge.begin(),edge.end());
