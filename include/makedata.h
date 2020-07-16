@@ -55,70 +55,24 @@ namespace MD
 		seed^=seed<<17;
 		return seed%a;
 	}
-	long long Random(long long f,long long e)
-	{
-		return f+Random(e-f+1);
-	}
-	char RandomChar(char l,char r)
-	{
-		return (char)Random(l,r);
-	}
-	char RandomChar(char *s)
-	{
-		return s[Random(strlen(s))];
-	}
-	void MakeArray(long long *array,int l,int r,long long num_l,long long num_r)
-	{
-		REP(i,l,r)
-		{
-			array[i]=Random(num_l,num_r);
-		}
-	}
-	void MakeArray(long long *array,int n,long long num_l,long long num_r)
-	{
-		REP(i,1,n)
-		{
-			array[i]=Random(num_l,num_r);
-		}
-	}
-	void MakeArray(long long *array,int l,int r,long long(*MakeNum)())
-	{
-		REP(i,l,r)
-		{
-			array[i]=MakeNum();
-		}
-	}
-	void MakeArray(long long *array,int n,long long(*MakeNum)())
-	{
-		REP(i,1,n)
-		{
-			array[i]=MakeNum();
-		}
-	}
-	void MakeArray(int *array,int n)
-	{
-		REP(i,1,n)
-		{
-			array[i]=i;
-		}
-		std::random_shuffle(array+1,array+1+n);
-	}
-	void MakeString(char *s,int l,int r,char *t)
-	{
-		int lent=strlen(t);
-		REP(i,l,r)
-		{
-			s[i]=t[Random(lent)];
-		}
-	}
-	void MakeString(char *s,int len,char *t)
-	{
-		int lent=strlen(t);
-		REP(i,0,len-1)
-		{
-			s[i]=t[Random(lent)];
-		}
-	}
+	long long Random(long long f,long long e){return f+Random(e-f+1);}
+	char RandomChar(char l,char r){return (char)Random(l,r);}
+	char RandomChar(char *s){return s[Random(strlen(s))];}
+	void MakeArray(long long *array,int l,int r,long long num_l,long long num_r){REP(i,l,r){array[i]=Random(num_l,num_r);}}
+	void MakeArray(long long *array,int n,long long num_l,long long num_r){REP(i,1,n){array[i]=Random(num_l,num_r);}}
+	void MakeArray(long long *array,int l,int r,long long(*MakeNum)()){REP(i,l,r){array[i]=MakeNum();}}
+	void MakeArray(long long *array,int n,long long(*MakeNum)()){REP(i,1,n){array[i]=MakeNum();}}
+	void WriteArray(long long *array,int l,int r,char s[2]=" \n"){REP(i,l,r){printf("%lld%c",array[i],s[i==r]);}}
+	void WriteArray(long long *array,int n,char s[2]=" \n"){REP(i,1,n){printf("%lld%c",array[i],s[i==n]);}}
+	void MakeArray(int *array,int l,int r,int num_l,int num_r){REP(i,l,r){array[i]=Random(num_l,num_r);}}
+	void MakeArray(int *array,int n,int num_l,int num_r){REP(i,1,n){array[i]=Random(num_l,num_r);}}
+	void MakeArray(int *array,int l,int r,int(*MakeNum)()){REP(i,l,r){array[i]=MakeNum();}}
+	void MakeArray(int *array,int n,int(*MakeNum)()){REP(i,1,n){array[i]=MakeNum();}}
+	void WriteArray(int *array,int l,int r,char s[2]=" \n"){REP(i,l,r){printf("%lld%c",array[i],s[i==r]);}}
+	void WriteArray(int *array,int n,char s[2]=" \n"){REP(i,1,n){printf("%lld%c",array[i],s[i==n]);}}
+	void MakeArray(int *array,int n){REP(i,1,n){array[i]=i;}std::random_shuffle(array+1,array+1+n);}
+	void MakeString(char *s,int l,int r,char *t){int lent=strlen(t);REP(i,l,r){s[i]=t[Random(lent)];}}
+	void MakeString(char *s,int len,char *t){int lent=strlen(t);REP(i,0,len-1){s[i]=t[Random(lent)];}}
 	void MakeRange(long long &l,long long &r,long long range_l,long long range_r)
 	{
 		long long len=range_r-range_l+1;
@@ -134,17 +88,24 @@ namespace MD
 			std::swap(l,r);
 		}
 	}
-	std::vector<int>f;
-	std::vector<int>father;
-	int Find(int now)
+	void MakeRange(int &l,int &r,int range_l,int range_r)
 	{
-		if(now==f[now])
+		int len=range_r-range_l+1;
+		if(Random(1,len*(len+1))<=len-1)
 		{
-			return now;
+			l=r=Random(range_l,range_r);
+			return;
 		}
-		return f[now]=Find(f[now]);
+		l=Random(range_l,range_r);
+		r=Random(range_l,range_r);
+		if(r<l)
+		{
+			std::swap(l,r);
+		}
 	}
-	void MakeTree(Graph &a,int n,int root=1,int opt=0,int k=2)
+	std::vector<int>f;
+	std::vector<int>sum;
+	void MakeTree(Graph &a,int n,int root=1,bool link=0,int opt=0,int k=2)
 	{
 		a=Graph(n);
 		if(n<2)
@@ -153,47 +114,52 @@ namespace MD
 		}
 		if(opt==0)
 		{
-			f.clear();
-			REP(i,0,n)
+			REP(i,1,n)
 			{
 				f.push_back(i);
 			}
-			int father;
-			REP(i,1,n)
+			std::random_shuffle(f.begin(),f.end());
+			REP(i,1,n-1)
 			{
-				if(i^root)
+				if(f[i]==root)
 				{
-					father=Random(1,n);
-					while(Find(father)==Find(i))
-					{
-						father=Random(1,n);
-					}
-					a.AddEdge(father,i);
-					a.AddEdge(i,father);
+					std::swap(f[i],f[0]);
 				}
-				f[Find(i)]=Find(father);
 			}
+			REP(i,1,n-1)
+			{
+				int father=f[Random(0,i-1)];
+				a.AddEdge(father,f[i]);
+				if(link)
+				{
+					a.AddEdge(f[i],father);
+				}
+			}
+			f.clear();
 		}
 		if(opt==1)
 		{
-			father.clear();
 			REP(i,1,n)
 			{
-				father.push_back(i);
+				f.push_back(i);
 			}
-			std::random_shuffle(father.begin(),father.end());
-			REP(i,0,father.size()-1)
+			std::random_shuffle(f.begin(),f.end());
+			REP(i,1,n-1)
 			{
-				if(father[i]==root)
+				if(f[i]==root)
 				{
-					std::swap(father[i],father[0]);
+					std::swap(f[i],f[0]);
 				}
 			}
-			REP(i,1,father.size()-1)
+			REP(i,1,n-1)
 			{
-				a.AddEdge(father[i-1],father[i]);
-				a.AddEdge(father[i],father[i-1]);
+				a.AddEdge(f[i-1],f[i]);
+				if(link)
+				{
+					a.AddEdge(f[i],f[i-1]);
+				}
 			}
+			f.clear();
 		}
 		if(opt==2)
 		{
@@ -201,62 +167,67 @@ namespace MD
 			{
 				if(i^root)
 				{
-					a.AddEdge(i,root);
 					a.AddEdge(root,i);
+					if(link)
+					{
+						a.AddEdge(i,root);
+					}
 				}
 			}
 		}
 		if(opt==3)
 		{
-			f.clear();
-			father.clear();
-			REP(i,0,n)
-			{
-				f.push_back(i);
-				father.push_back(0);
-			}
-			int fa;
 			REP(i,1,n)
 			{
-				if(i^root)
+				f.push_back(i);
+				sum.push_back(0);
+			}
+			std::random_shuffle(f.begin(),f.end());
+			REP(i,1,n-1)
+			{
+				if(f[i]==root)
 				{
-					fa=Random(1,n);
-					while(Find(fa)==Find(i)||father[fa]==k)
-					{
-						fa=Random(1,n);
-					}
-					father[fa]++;
-					f[Find(i)]=Find(fa);
-					a.AddEdge(fa,i);
-					a.AddEdge(i,fa);
+					std::swap(f[i],f[0]);
 				}
 			}
+			REP(i,1,n-1)
+			{
+				int father=f[Random(0,i-1)];
+				while(sum[father-1]==k)
+				{
+					father=f[Random(0,i-1)];
+				}
+				sum[father-1]++;
+				a.AddEdge(father,f[i]);
+				if(link)
+				{
+					a.AddEdge(f[i],father);
+				}
+			}
+			f.clear();
+			sum.clear();
 		}
 		if(opt==4)
 		{
-			father.clear();
 			REP(i,0,n)
 			{
-				father.push_back(i);
+				f.push_back(i);
 			}
-			std::swap(father[1],father[root]);
-			std::random_shuffle(father.begin()+2,father.end());
+			std::swap(f[1],f[root]);
+			std::random_shuffle(f.begin()+2,f.end());
 			REP(i,2,n)
 			{
-				a.AddEdge(father[i],father[i/2]);
-				a.AddEdge(father[i/2],father[i]);
+				a.AddEdge(f[i],f[i/2]);
+				if(link)
+				{
+					a.AddEdge(f[i/2],f[i]);
+				}
 			}
-		}
-	}
-	void WriteArray(long long *array,int l,int r,char s[2]=" \n")
-	{
-		REP(i,l,r)
-		{
-			printf("%lld%c",array[i],s[i==r]);
+			f.clear();
 		}
 	}
 	std::vector<std::pair<int,int> >edge;
-	void WriteGraph(Graph &a,int opt=0)
+	void WriteGraph(Graph &a,bool opt=0)
 	{
 		if(!a.out_point.size())
 		{
@@ -267,16 +238,16 @@ namespace MD
 		{
 			FOR(a,i)
 			{
-				if(opt==1)
+				if(opt==0)
+				{
+					edge.push_back(std::make_pair(i,to));
+				}
+				if(opt)
 				{
 					if(i<to)
 					{
 						edge.push_back(std::make_pair(i,to));
 					}
-				}
-				if(opt==0)
-				{
-					edge.push_back(std::make_pair(i,to));
 				}
 			}
 		}
@@ -285,13 +256,20 @@ namespace MD
 		{
 			REP(i,0,edge.size()-1)
 			{
-				if(Random(2))
-				{
-					printf("%d %d\n",edge[i].first,edge[i].second);
-				}
-				else
+				if(opt==0)
 				{
 					printf("%d %d\n",edge[i].second,edge[i].first);
+				}
+				if(opt)
+				{
+					if(Random(2))
+					{
+						printf("%d %d\n",edge[i].first,edge[i].second);
+					}
+					else
+					{
+						printf("%d %d\n",edge[i].second,edge[i].first);
+					}
 				}
 			}
 		}
