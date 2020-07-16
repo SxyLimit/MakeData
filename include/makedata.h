@@ -12,11 +12,14 @@
 #define NUM '0','9'
 #define CHAR 32,126
 std::vector<int>null_vector;
+#define FOR(edge,now) for(int edge_i=0,to=edge.out_point[now].size()?edge.out_point[now][0]:0;edge_i<edge.out_point[now].size();edge_i++,to=edge.out_point[now][edge_i])
 struct Graph
 {
 	std::vector<std::vector<int> >out_point;
-	Graph(int n=0)
+	bool link;
+	Graph(int n=0,bool l=0)
 	{
+		link=l;
 		REP(i,0,n)
 		{
 			out_point.push_back(null_vector);
@@ -31,30 +34,12 @@ struct Graph
 		out_point.clear();
 	}
 };
-#define FOR(edge,now) for(int edge_i=0,to=edge.out_point[now].size()?edge.out_point[now][0]:0;edge_i<edge.out_point[now].size();edge_i++,to=edge.out_point[now][edge_i])
 namespace MD
 {
 	unsigned long long seed=233;
-	void Srand(unsigned long long a=time(NULL))
-	{
-		seed=a;
-		seed^=seed<<13;
-		seed^=seed>>7;
-		seed^=seed<<17;
-	}
-	void Begin()
-	{
-		Sleep(1000);
-		srand(time(NULL));
-		Srand();
-	}
-	long long Random(long long a)
-	{
-		seed^=seed<<13;
-		seed^=seed>>7;
-		seed^=seed<<17;
-		return seed%a;
-	}
+	void Srand(unsigned long long a=time(NULL)){seed=a;seed^=seed<<13;seed^=seed>>7;seed^=seed<<17;}
+	void Begin(){Sleep(1000);srand(time(NULL));Srand();}
+	long long Random(long long a){seed^=seed<<13;seed^=seed>>7;seed^=seed<<17;return seed%a;}
 	long long Random(long long f,long long e){return f+Random(e-f+1);}
 	char RandomChar(char l,char r){return (char)Random(l,r);}
 	char RandomChar(char *s){return s[Random(strlen(s))];}
@@ -107,13 +92,14 @@ namespace MD
 	std::vector<int>sum;
 	void MakeTree(Graph &a,int n,int root=1,bool link=0,int opt=0,int k=2)
 	{
-		a=Graph(n);
+		a=Graph(n,link);
 		if(n<2)
 		{
 			return;
 		}
 		if(opt==0)
 		{
+			f.clear();
 			REP(i,1,n)
 			{
 				f.push_back(i);
@@ -124,6 +110,7 @@ namespace MD
 				if(f[i]==root)
 				{
 					std::swap(f[i],f[0]);
+					break;
 				}
 			}
 			REP(i,1,n-1)
@@ -139,6 +126,7 @@ namespace MD
 		}
 		if(opt==1)
 		{
+			f.clear();
 			REP(i,1,n)
 			{
 				f.push_back(i);
@@ -149,6 +137,7 @@ namespace MD
 				if(f[i]==root)
 				{
 					std::swap(f[i],f[0]);
+					break;
 				}
 			}
 			REP(i,1,n-1)
@@ -177,6 +166,8 @@ namespace MD
 		}
 		if(opt==3)
 		{
+			f.clear();
+			sum.clear();
 			REP(i,1,n)
 			{
 				f.push_back(i);
@@ -188,6 +179,7 @@ namespace MD
 				if(f[i]==root)
 				{
 					std::swap(f[i],f[0]);
+					break;
 				}
 			}
 			REP(i,1,n-1)
@@ -209,6 +201,7 @@ namespace MD
 		}
 		if(opt==4)
 		{
+			f.clear();
 			REP(i,0,n)
 			{
 				f.push_back(i);
@@ -217,17 +210,174 @@ namespace MD
 			std::random_shuffle(f.begin()+2,f.end());
 			REP(i,2,n)
 			{
-				a.AddEdge(f[i],f[i/2]);
+				a.AddEdge(f[i/2],f[i]);
 				if(link)
 				{
-					a.AddEdge(f[i/2],f[i]);
+					a.AddEdge(f[i],f[i/2]);
 				}
 			}
 			f.clear();
 		}
 	}
+	struct Hash_Pair
+	{ 
+	    template<class T1,class T2>
+	    size_t operator()(const std::pair<T1,T2>&p)const
+	    { 
+	        auto hash1=std::hash<T1>{}(p.first); 
+	        auto hash2=std::hash<T2>{}(p.second); 
+	        return hash1^hash2; 
+	    }
+	};
+	std::unordered_map<std::pair<int,int>,bool,Hash_Pair>Hash;
+	void MakeGraph(Graph &gra,int n,int m,bool connect=0,bool link=0,int opt=0)
+	{
+		gra=Graph(n,link);
+		if(n<2)
+		{
+			return;
+		}
+		if(opt==0)
+		{
+			if(link)
+			{
+				if(connect)
+				{
+					if(m<n-1)
+					{
+						return;
+					}
+					Hash.clear();
+					MakeTree(gra,n,Random(1,n),1);
+					m-=n-1;
+					REP(i,1,n)
+					{
+						FOR(gra,i)
+						{
+							Hash[std::make_pair(i,to)]=
+							Hash[std::make_pair(to,i)]=1;
+						}
+					}
+					REP(i,1,m)
+					{
+						int a=Random(1,n),b=Random(1,n);
+						while(a==b)
+						{
+							b=Random(1,n);
+						}
+						while(Hash[std::make_pair(a,b)])
+						{
+							a=Random(1,n);
+							b=Random(1,n);
+							while(a==b)
+							{
+								b=Random(1,n);
+							}
+						}
+						Hash[std::make_pair(a,b)]=
+						Hash[std::make_pair(b,a)]=1;
+						gra.AddEdge(a,b);
+						gra.AddEdge(b,a);
+					}
+					Hash.clear();
+				}
+				else
+				{
+					Hash.clear();
+					REP(i,1,m)
+					{
+						int a=Random(1,n),b=Random(1,n);
+						while(a==b)
+						{
+							b=Random(1,n);
+						}
+						while(Hash[std::make_pair(a,b)])
+						{
+							a=Random(1,n);
+							b=Random(1,n);
+							while(a==b)
+							{
+								b=Random(1,n);
+							}
+						}
+						Hash[std::make_pair(a,b)]=
+						Hash[std::make_pair(b,a)]=1;
+						gra.AddEdge(a,b);
+						gra.AddEdge(b,a);
+					}
+					Hash.clear();
+				}
+			}
+			else
+			{
+				if(connect)
+				{
+					if(m<n)
+					{
+						return;
+					}
+					Hash.clear();
+					REP(i,1,n)
+					{
+						f.push_back(i);
+					}
+					random_shuffle(f.begin(),f.end());
+					REP(i,0,n-1)
+					{
+						gra.AddEdge(f[i],f[(i+1)%n]);
+						Hash[std::make_pair(f[i],f[(i+1)%n])]=1;
+					}
+					m-=n;
+					REP(i,1,m)
+					{
+						int a=Random(1,n),b=Random(1,n);
+						while(a==b)
+						{
+							b=Random(1,n);
+						}
+						while(Hash[std::make_pair(a,b)])
+						{
+							a=Random(1,n);
+							b=Random(1,n);
+							while(a==b)
+							{
+								b=Random(1,n);
+							}
+						}
+						Hash[std::make_pair(a,b)]=1;
+						gra.AddEdge(a,b);
+					}
+					Hash.clear();
+				}
+				else
+				{
+					Hash.clear();
+					REP(i,1,m)
+					{
+						int a=Random(1,n),b=Random(1,n);
+						while(a==b)
+						{
+							b=Random(1,n);
+						}
+						while(Hash[std::make_pair(a,b)])
+						{
+							a=Random(1,n);
+							b=Random(1,n);
+							while(a==b)
+							{
+								b=Random(1,n);
+							}
+						}
+						Hash[std::make_pair(a,b)]=1;
+						gra.AddEdge(a,b);
+					}
+					Hash.clear();
+				}
+			}
+		}
+	}
 	std::vector<std::pair<int,int> >edge;
-	void WriteGraph(Graph &a,bool opt=0)
+	void WriteGraph(Graph &a)
 	{
 		if(!a.out_point.size())
 		{
@@ -238,16 +388,16 @@ namespace MD
 		{
 			FOR(a,i)
 			{
-				if(opt==0)
-				{
-					edge.push_back(std::make_pair(i,to));
-				}
-				if(opt)
+				if(a.link)
 				{
 					if(i<to)
 					{
 						edge.push_back(std::make_pair(i,to));
 					}
+				}
+				else
+				{
+					edge.push_back(std::make_pair(i,to));
 				}
 			}
 		}
@@ -256,11 +406,7 @@ namespace MD
 		{
 			REP(i,0,edge.size()-1)
 			{
-				if(opt==0)
-				{
-					printf("%d %d\n",edge[i].second,edge[i].first);
-				}
-				if(opt)
+				if(a.link)
 				{
 					if(Random(2))
 					{
@@ -270,6 +416,10 @@ namespace MD
 					{
 						printf("%d %d\n",edge[i].second,edge[i].first);
 					}
+				}
+				else
+				{
+					printf("%d %d\n",edge[i].first,edge[i].second);
 				}
 			}
 		}
