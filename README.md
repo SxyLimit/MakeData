@@ -119,7 +119,7 @@ FOR(e,a) 表示在遍历 e 这个图中 a 的出边,其中 to 表示连出的节
 3. 生成一个随机的 ![](https://latex.codecogs.com/svg.latex?k) 叉树(每个点的儿子个数最多为 ![](https://latex.codecogs.com/svg.latex?k)).
 4. 生成一个随机的满二叉树.
 
-## MakeGraph(Graph &gra,int n,int m,bool connect=0,bool link=0,int opt=0)
+## MakeGraph(Graph &gra,int n,int m,bool connect,bool link,int opt)
 
 其中 ![](https://latex.codecogs.com/svg.latex?connect) 默认值为 ![](https://latex.codecogs.com/svg.latex?0),![](https://latex.codecogs.com/svg.latex?link) 默认为 ![](https://latex.codecogs.com/svg.latex?0),![](https://latex.codecogs.com/svg.latex?opt) 默认为 ![](https://latex.codecogs.com/svg.latex?0).
 
