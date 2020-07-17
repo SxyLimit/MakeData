@@ -2,7 +2,6 @@
 #include<windows.h>
 #define REP(i,first,last) for(int i=first;i<=last;++i)
 #define DOW(i,first,last) for(int i=first;i>=last;--i)
-
 #define RAND_INT Random(-1e9,1e9)
 #define RAND_LL Random(-5e17,5e17)
 #define _RAND_INT Random(0,1e9)
@@ -28,6 +27,10 @@ struct Graph
 	void AddEdge(int form,int to)
 	{
 		out_point[form].push_back(to);
+		if(link)
+		{
+			out_point[to].push_back(form);
+		}
 	}
 	void Clean()
 	{
@@ -117,10 +120,6 @@ namespace MD
 			{
 				int father=f[Random(0,i-1)];
 				a.AddEdge(father,f[i]);
-				if(link)
-				{
-					a.AddEdge(f[i],father);
-				}
 			}
 			f.clear();
 		}
@@ -143,10 +142,6 @@ namespace MD
 			REP(i,1,n-1)
 			{
 				a.AddEdge(f[i-1],f[i]);
-				if(link)
-				{
-					a.AddEdge(f[i],f[i-1]);
-				}
 			}
 			f.clear();
 		}
@@ -157,10 +152,6 @@ namespace MD
 				if(i^root)
 				{
 					a.AddEdge(root,i);
-					if(link)
-					{
-						a.AddEdge(i,root);
-					}
 				}
 			}
 		}
@@ -191,10 +182,6 @@ namespace MD
 				}
 				sum[father-1]++;
 				a.AddEdge(father,f[i]);
-				if(link)
-				{
-					a.AddEdge(f[i],father);
-				}
 			}
 			f.clear();
 			sum.clear();
@@ -211,22 +198,18 @@ namespace MD
 			REP(i,2,n)
 			{
 				a.AddEdge(f[i/2],f[i]);
-				if(link)
-				{
-					a.AddEdge(f[i],f[i/2]);
-				}
 			}
 			f.clear();
 		}
 	}
 	struct Hash_Pair
-	{ 
+	{
 	    template<class T1,class T2>
 	    size_t operator()(const std::pair<T1,T2>&p)const
-	    { 
-	        auto hash1=std::hash<T1>{}(p.first); 
-	        auto hash2=std::hash<T2>{}(p.second); 
-	        return hash1^hash2; 
+	    {
+	        auto hash1=std::hash<T1>{}(p.first);
+	        auto hash2=std::hash<T2>{}(p.second);
+	        return hash1^hash2;
 	    }
 	};
 	std::unordered_map<std::pair<int,int>,bool,Hash_Pair>Hash;
@@ -277,7 +260,6 @@ namespace MD
 						Hash[std::make_pair(a,b)]=
 						Hash[std::make_pair(b,a)]=1;
 						gra.AddEdge(a,b);
-						gra.AddEdge(b,a);
 					}
 					Hash.clear();
 				}
@@ -303,7 +285,6 @@ namespace MD
 						Hash[std::make_pair(a,b)]=
 						Hash[std::make_pair(b,a)]=1;
 						gra.AddEdge(a,b);
-						gra.AddEdge(b,a);
 					}
 					Hash.clear();
 				}
