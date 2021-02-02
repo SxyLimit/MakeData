@@ -52,7 +52,7 @@ namespace IO
 	char buf[IN_BUF],*ps=buf,*pt=buf,pbuf[OUT_BUF],*pp=pbuf;
 	inline char GetChar()
 	{
-//		return getchar();
+		return getchar();
 		if(ps==pt)
 		{
 			ps=buf;
@@ -62,7 +62,7 @@ namespace IO
 	}
 	inline void PutChar(const char ch)
 	{
-//		putchar(ch);return;
+		putchar(ch);return;
 		if(pp==pbuf+OUT_BUF)
 		{
 			fwrite(pbuf,1,OUT_BUF,stdout);
@@ -397,52 +397,6 @@ namespace IO
 		PutChar(10);
 		exit(0);
 	}
-	#ifndef ONLINE_JUDGE
-		template<class ...Args>
-		inline void DeBug(const Args ...args)
-		{
-			Write(args...);
-		}
-		template<class ...Args>
-		inline void DeBugln(const Args ...args)
-		{
-			Writeln(args...);
-		}
-		inline void DeBugln()
-		{
-			Writeln();
-		}
-	#else
-		template<class ...Args>
-		inline void DeBug(const Args ...args)
-		{
-
-		}
-		template<class ...Args>
-		inline void DeBugln(const Args ...args)
-		{
-
-		}
-		inline void DeBugln()
-		{
-
-		}
-	#endif
-	class CodeToDo
-	{
-	public:
-		inline CodeToDo()
-		{
-			freopen("data.in","w",stdout);
-			srand(time(NULL));
-			MD::Srand();
-		}
-		inline ~CodeToDo()
-		{
-			fwrite(pbuf,1,pp-pbuf,stdout);
-			fclose(stdout);
-		}
-	}code_to_do;
 }
 template<typename T>
 inline T Max(const T a,const T b)
