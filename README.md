@@ -6,23 +6,17 @@
 
 初始化随机数,默认为 `seed=time(NULL)`.
 
-## Bgein()
+## Begin()
 
 开始生成一个数据,其中包含 `Sleep(1000)`(防止相邻数据的随机化种子相同)以及初始化随机数.
 
-## Random(ll a)
+## RandomNumber(ll a)
 
 等概率随机生成一个 ![](https://latex.codecogs.com/svg.latex?[0,a%29) 内的整数.
 
-## Random(ll l,ll r)
+## Random(T l,T r)
 
 等概率随机生成一个 ![](https://latex.codecogs.com/svg.latex?[l,r]) 内的整数.
-
-## RandomChar(char l,char r)
-
-随机返回一个在 ![](https://latex.codecogs.com/svg.latex?l) 到 ![](https://latex.codecogs.com/svg.latex?r) 范围内的字符.
-
-其中包含以下可用的宏定义:
 
 ```cpp
 #define _abc_ 'a','z'//小写字母
@@ -31,57 +25,9 @@
 #define CHAR 32,126//可见字符
 ```
 
-~~虽然这个东西和 `Random(ll l,ll r)` 一毛一样.~~
-
-## RandomChar(char \*s)
-
-随机返回字符串 ![](https://latex.codecogs.com/svg.latex?s) 中的一个字符.
-
-其中如果 `s="abb"`,那么返回的元素出现 `a` 的概率为 ![](https://latex.codecogs.com/svg.latex?\frac{1}{3}),出现 `b` 的概率为 ![](https://latex.codecogs.com/svg.latex?\frac{2}{3}).
-
-## MakeArray(ll/int \*array,int l,int r,ll/int num_l,ll/int num_r)
-
-对于 ![](https://latex.codecogs.com/svg.latex?array_l\sim%20array_r) 中的元素随机给出一个 ![](https://latex.codecogs.com/svg.latex?[num\_l,num\_r]) 范围内的整数.
-
-## MakeArray(ll/int \*array,int n,ll/int num_l,ll/int num_r)
-
-相当于 `MakeArray(array,1,n,num_l,num_r)`.
-
-## MakeArray(ll/int \*array,int l,int r,ll/int(\*MakeNum)())
-
-对于 ![](https://latex.codecogs.com/svg.latex?array_l\sim%20array_r) 中的元素都用 `MakeNum()` 赋值一次.
-
-## MakeArray(ll/int \*array,int n,ll(\*MakeNum)())
-
-相当于 `MakeArray(array,1,n,MakeNum())`.
-
-## MakeArray(int \*array,int n)
-
-对于 ![](https://latex.codecogs.com/svg.latex?array_1\sim%20array_n) 中的元素随机给出一个 ![](https://latex.codecogs.com/svg.latex?1\sim%20n) 的排列(![](https://latex.codecogs.com/svg.latex?1\sim%20n) 中每个元素有且出现一次但是没有顺序).
-
-## MakeString(char \*s,int l,int r,char \*t)
-
-对于 ![](https://latex.codecogs.com/svg.latex?s_l\sim%20s_r) 中的元素都等概率随机给出 `t[]` 中的元素.
-
-其中如果 `t="abb"`,那么对于 ![](https://latex.codecogs.com/svg.latex?s) 中的每个元素出现 `a` 的概率为 ![](https://latex.codecogs.com/svg.latex?\frac{1}{3}),出现 `b` 的概率为 ![](https://latex.codecogs.com/svg.latex?\frac{2}{3}).
-
-## MakeString(char \*s,int len,char \*t)
-
-相当于 `MakeString(s,0,len-1,char t[])`.
-
 ## MakeRange(ll/int &l,ll/int &r,ll/int range_l,ll/int range_r)
 
 将 ![](https://latex.codecogs.com/svg.latex?l,r) 变成 ![](https://latex.codecogs.com/svg.latex?[range\_l,range\_r]) 内的随机一个整数,且严格保证 ![](https://latex.codecogs.com/svg.latex?l\leq%20r).
-
-## WriteArray(ll/int \*array,int l,int r,char s[2])
-
-输出 ![](https://latex.codecogs.com/svg.latex?array_l\sim%20array_r),其中对于 ![](https://latex.codecogs.com/svg.latex?array_l\sim%20array_{r-1}) 后会输出 `s[0]`,![](https://latex.codecogs.com/svg.latex?array_r) 后会输出 `s[1]`.
-
-## WriteArray(ll/int \*array,int n,char s[2])
-
-相当于 `WriteArray(array,1,n,s)`.
-
-其中 ![](https://latex.codecogs.com/svg.latex?s) 的默认值是 `" \n"`,即在一行内输出 ![](https://latex.codecogs.com/svg.latex?array_l\sim%20array_r) 用空格隔开,并且在最后换行.
 
 ## struct Graph
 
@@ -92,6 +38,10 @@
 ### Graph.AddEdge(int a,int b)
 
 添加一条连接 ![](https://latex.codecogs.com/svg.latex?a,b) 的边.
+
+### Graph.Write()
+
+输出这个图.
 
 ### Clean()
 
@@ -128,11 +78,6 @@ FOR(e,a) 表示在遍历 e 这个图中 a 的出边,其中 to 表示连出的节
 ![](https://latex.codecogs.com/svg.latex?opt):
 
 0. 一个随机的图.
-
-## void WriteGraph(Graph &a)
-
-输出图 ![](https://latex.codecogs.com/svg.latex?a),如果 ![](https://latex.codecogs.com/svg.latex?a) 是有向图每条边 ![](https://latex.codecogs.com/svg.latex?u\to%20v) 都会输出一次,如果 ![](https://latex.codecogs.com/svg.latex?a) 是无向图,![](https://latex.codecogs.com/svg.latex?u\leftrightarrow%20v) 只会出现一次(`u v` 和 `v u` 都有概率出现)
-
 
 # make.bat
 
