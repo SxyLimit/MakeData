@@ -49,7 +49,7 @@
 
 ## MakeArray(ll/int \*array,int l,int r,ll/int(\*MakeNum)())
 
-对于 $array_l\sim%20array_r$ 中的元素都用 `MakeNum()` 赋值一次。
+对于 $array_l\sim array_r$ 中的元素都用 `MakeNum()` 赋值一次。
 
 ## MakeArray(ll/int \*array,int n,ll(\*MakeNum)())
 
