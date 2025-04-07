@@ -1,147 +1,142 @@
-# MakeData.h
+# makedata.h
 
-一个用于生成数据的库
+一个用于生成数据的 C++ 库。
 
-## Srand(ull seed)
+## 全局函数
 
-初始化随机数,默认为 `seed=time(NULL)`。
+### Max(a,b)
 
-## Begin()
+返回 $a,b$ 中较大的值，如果有大于两个参数也可以通过空格隔开查询，如 `Max(a,b,c)`。
 
-开始生成一个数据，其中包含 `Sleep(1000)` 防止相邻数据的随机化种子相同。（有空改成按毫秒或者系统噪声为 seed）
+### Min(a,b)
 
-## Random(ll a)
+返回 $a,b$ 中较小的值，如果有大于两个参数也可以通过空格隔开查询，如 `Max(a,b,c)`。
 
-等概率随机生成一个 $[0,a)$ 内的整数。
+### Swap(a,b)
 
-## Random(ll l,ll r))
+交换 $a,b$ 的值。
 
-等概率随机生成一个 $[l,r]$ 内的整数。
+### UnorderedPair(a,b)
 
-## RandomChar(char l,char r)
+返回一个 `std::pair<int,int>` 表示**无序对** $(a,b)$。
 
-随机返回一个在 $l$ 到 $r$ 范围内的字符。
+### EdgePair(a,b,link)
 
-其中包含以下可用的宏定义：
+返回一个 `std::pair<int,int>` 表示一条边 $(a,b)$，若 $link=1$ 则返回无序对（无向图），否则返回有序对（有向图）。 
 
-```cpp
-#define _abc_ 'a','z'//小写字母
-#define _ABC_ 'A','Z'//大写字母
-#define NUM '0','9'//数字
-#define CHAR 32,126//可见字符
-```
+## namespace IO
 
-~~虽然这个东西和 `Random(ll l,ll r)` 一毛一样。~~
+### Write(a)
 
-## RandomChar(char \*s)
+输出 $a$ 的内容，如果要输出多种不同类型的内容可以通过空格隔开如 `Write(123," 123");`。
 
-随机返回字符串 $s$ 中的一个字符。
+### Writeln()
 
-其中如果 `s="abb"`，那么返回的元素出现 `a` 的概率为 $\frac{1}{3}$，出现 `b` 的概率为 $\frac{2}{3}$。
+输出回车。
 
-## MakeArray(ll/int \*array,int l,int r,ll/int num_l,ll/int num_r)
+### Writeln(a)
 
-对于 $array_l\sim array_r$ 中的元素随机给出一个 $[num\_l,num\_r]$ 范围内的整数。
+同 `Write()` 函数，但是会在输出完其中内容后输出一个回车。
 
-## MakeArray(ll/int \*array,int n,ll/int num_l,ll/int num_r)
+## namespace MD
 
-相当于 `MakeArray(array,1,n,num_l,num_r)`。
+### Srand()
 
-## MakeArray(ll/int \*array,int l,int r,ll/int(\*MakeNum)())
+设置随机数种子。
 
-对于 $array_l\sim array_r$ 中的元素都用 `MakeNum()` 赋值一次。
+引用库时后，运行程序时会默认以 `std::chrono::high_resolution_clock::now().time_since_epoch().count()` 作为种子。
 
-## MakeArray(ll/int \*array,int n,ll(\*MakeNum)())
+### Random()
 
-相当于 `MakeArray(array,1,n,MakeNum())`。
+返回一个 $[0,2^{64})$ 范围内的随机数。
 
-## MakeArray(int \*array,int n)
+### RandomShuffle(begin,end)
 
-对于 $array_1\sim array_n$ 中的元素随机给出一个 $1\sim n$ 的排列（$1\sim n$ 中每个元素有且出现一次但是没有顺序）。
+同 `std::random_shuffle` 但是使用库中的随机数。
 
-## MakeString(char \*s,int l,int r,char \*t)
+### Random(l,r)
 
-对于 $s_l\sim s_r$ 中的元素都等概率随机给出 `t[]` 中的元素。
+返回 $[l,r]$ 范围内的随机数（$l\leq r$ 且为同类型整数）。
 
-其中如果 `t="abb"`，那么对于 $s$ 中的每个元素出现 `a` 的概率为 $\frac{1}{3}$，出现 `b` 的概率为 $\frac{2}{3}$。
+### Random(a)
 
-## MakeString(char \*s,int len,char \*t)
+返回 $[0,a)$ 范围内的随机数。
 
-相当于 `MakeString(s,0,len-1,char t[])`。
+### RandomChar(s[],len=-1)
 
-## MakeRange(ll/int &l,ll/int &r,ll/int range_l,ll/int range_r)
+若 $len$ 为 $-1$ 则会在 $s$ 中随机一个字符返回。
 
-将 $l,r$ 变成 $[range\_l,range\_r]$ 内的随机一个整数,且严格保证 $l\leq r$。
+否则会在 $s$ 的 $[0,len)$ 中随机一个字符返回。
 
-## WriteArray(ll/int \*array,int l,int r,char s[2])
+### Graph
 
-输出 $array_l\sim array_r$，其中对于 $array_l\sim array_{r-1}$ 后会输出 `s[0]`，$array_r$ 后会输出 `s[1]`。
+表示图的类。
 
-## WriteArray(ll/int \*array,int n,char s[2])
+下标从 $1$ 开始。
 
-相当于 `WriteArray(array,1,n,s)`。
+包含图中边从信息和图的类型 $link$（若为 $1$ 则为无向图，否则为有向图）。
 
-其中 $s$ 的默认值是 `" \n"`，即在一行内输出 $array_l\sim array_r$ 用空格隔开，并且在最后换行。
+通过 `Graph(n,link)` 初始化。
 
-## struct Graph
+#### Size()
 
-一个用于存储图的结构体。
+返回图中点的个数。
 
-构造函数 `Graph(n,l)`，其中 $n$ 为节点个数编号为 $1\sim n$，$l$ 是否为有向图（$l=0$ 为有向图，$l=1$ 为无向图）。
+#### Edge()
 
-### Graph.AddEdge(int a,int b)
+返回图中边的个数。
 
-添加一条连接 $a,b$ 的边。
+#### Clean()
 
-### Clean()
+清空图，需要重新初始化。
 
-清空图。
+#### 遍历
 
-### define
+对于一个 $Graph$ 类型的变量 $g$，可以通过 `FOR(g,i)` 枚举 $i$ 的出边，会存储在 $to$ 变量中。
 
-对于此结构体包含以下 `define`：
+#### AddEdge(u,v)
 
-```cpp
-#define FOR(edge,now$ for(int edge_i=0,to=edge.out_point[now].size()?edge.out_point[now][0]:0;edge_i<edge.out_point[now].size();edge_i++,to=edge.out_point[now][edge_i])
-/*
-FOR(e,a$ 表示在遍历 e 这个图中 a 的出边,其中 to 表示连出的节点的编号
-*/
-```
-## MakeTree(Graph &a,int n,int root,bool link,int opt,int k)
+添加一条 $(u,v)$ 边，若为无向图，则也会添加反向边。
 
-其中 $root$ 默认为 $1$，$link$ 默认为 $0$，$opt$ 默认为 $0$，$k$ 默认为 $2$。
+#### ReShuffle(root=0)
 
-$a$ 表示要生成的树所存储的图，$n$ 表示有 $n$ 个节点，$root$ 表示根节点编号，$link$ 表示十分是无向图（$link=0$ 是有向图，只有父亲向儿子连边，$link=1$ 是无向图），$opt$ 表示生成树的种类，$k$ 是辅助用数。
+打乱图中的点的编号，若 $root\not=0$，则 $root$ 点的编号不会被打乱。
 
-$opt$：
+#### Write()
 
-0. 生成一颗随机的树.
-1. 生成一条随机的链.
-2. 生成一个随机的菊花图(根节点出度为 $n-1$$.
-3. 生成一个随机的 $k$ 叉树(每个点的儿子个数最多为 $k$).
-4. 生成一个随机的满二叉树.
+输出图，共 $Edge()$ 行，每行两个由空格隔开的整数，表示一条边。
 
-## MakeGraph(Graph &gra,int n,int m,bool connect,bool link,int opt)
+#### Write(F())
 
-其中 $connect$ 默认值为 $0$，$link$ 默认为 $0$，$opt$ 默认为 $0$。
+输出图，共 $Edge()$ 行，每行三个由空格隔开的整数，表示一条边和由 $F()$ 生成的边权。
 
-$a$ 表示要生成的图所存储的图，$n$ 表示有 $n$ 个节点，$m$ 表示有 $m$ 条边，$connect$ 表示是否连通（$connect=0$ 表示不一定连通，$connect=1$ 表示连通，即每个点都可以到所有其他的点），$link$ 表示是否是无向图（$link=0$ 是有向图，$link=1$ 是无向图），$opt$ 表示生成图的种类。
+#### Merge(g,add_edge=0,l=-1,r=-1)
 
-$opt$：
+将该图与 $g$ 图合并，会将 $g$ 图中的点的编号加上当前图的点的个数。
 
-0. 一个随机的图。
+在合并后会在两个子图中选择 $add\_edge$ 条新的边连接两个图。
 
-## void WriteGraph(Graph &a)
+其中在第二个图中选择的点的编号在 $[l,r]$ 范围内。若为 $-1$ 则设置为默认值 $l=1$ 和 $r=g.Size()$。
 
-输出图 $a$，如果 $a$ 是有向图每条边 $u\to v$ 都会输出一次，如果 $a$ 是无向图，$u\leftrightarrow v$ 只会出现一次（`u v` 和 `v u` 都有概率出现）。
+#### MakeSimpleTree(n,kind,link)
 
+生成一个 $Graph(n,link)$ 的树。
 
-# make.bat
+生成的树都比较特殊，更具 $kind$ 分类为（其中若 $link=0$，树为有根树，连边均从编号较小的点连向编号较大的点）：
 
-一个可以和 makedata.h 一起使用的批处理文件。
+0. 每个大于 $1$ 的节点会选择一个编号小于自己的点连边。
+1. 每个大于 $1$ 的节点会选择一个编号为自己减一的点连边。（为一条长度为 $n$ 的链）
+2. 每个大于 $1$ 的节点会选择 $1$ 号点连边。（为包含 $n-1$ 个叶节点的菊花树）
+3. 每个大于 $1$ 的节点会选择自己编号除以二向下取整的编号的点连边。（完全二叉树）
+4. 会选择 $[3,10]$ 个点与 $1$ 连边，剩下的点与这几个点连边。
+5. 会选择 $[\lfloor\frac{n}{3}\rfloor,2\lfloor\frac{n}{3}\rfloor]$ 个点与 $1$ 连边，剩下的点与这几个点连边。
 
-## 使用方法
+#### MixTree(n,link,div=3)
 
-makedata.exe、std.exe、make.bat 放在同一目录下，并运行 bat 文件，其中的 $l$ 和 $r$ 为数据的编号范围 $l.cpp\sim r.cpp$。
+生成一个 $Graph(n,link)$ 的树。
 
-其中的 std 和 makedata 都不需要读入输出文件。
+通过 $MakeSimpleTree$ 函数生成的特殊的树通过拼接生成一个较大的树。
+
+当 $n$ 较大时（阈值为 $15$），会先构造大小约为 $\frac{n}{div}$ 大小的链（$kind=1$）和菊花树（$kind=2$）树合并。剩余节点生成若干较小的树（随机选择 $kind$）继续合并。
+
+## define
