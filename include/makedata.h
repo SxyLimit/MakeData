@@ -1,14 +1,89 @@
 #include<bits/stdc++.h>
+#include<windows.h>
+#define RWRI(i,f,l) for(int i(f);i<=l;Write(i==l?'\n':' '),++i)
+#define ULL unsigned long long
+#define LL long long
 namespace MD
 {
-	unsigned long long seed=233;
-	inline void Srand(unsigned long long a=time(NULL))
+	ULL seed=233;
+	inline void Srand(const ULL a=std::chrono::high_resolution_clock::now().time_since_epoch().count())
 	{
 		seed=a;
 		seed^=seed<<13;
 		seed^=seed>>7;
 		seed^=seed<<17;
 	}
+	class ToDo
+	{
+	public:
+		inline ToDo()
+		{
+			Srand();
+			// srand(std::chrono::high_resolution_clock::now().time_since_epoch().count());
+		}
+	}todo;
+	inline ULL Random()
+	{
+		seed^=seed<<13;
+		seed^=seed>>7;
+		seed^=seed<<17;
+		return seed;
+	}
+	template <typename RandomIt>
+	inline void RandomShuffle(RandomIt begin, RandomIt end)
+	{
+		if(begin>=end)
+		{
+			return;
+		}
+		auto length=std::distance(begin, end);
+		for(std::size_t i=1;i<length;++i)
+		{
+			std::size_t rand_index=Random()%i;
+			std::iter_swap(begin+i,begin+rand_index);
+		}
+	}
+	
+	template<typename T>
+	inline T Random(T f,T e)
+	{
+		return f+Random()%(e-f+1);
+	}
+	template<typename T>
+	inline T Random(T a)
+	{
+		return Random()%a;
+	}
+	inline char RandomChar(char s[],int len=-1)
+	{
+		return s[Random()%(~len?len:strlen(s))];
+	}
+	template<typename T>
+	inline void MakeRange(T &l,T &r,T range_l,T range_r)
+	{
+		T len=range_r-range_l+1;
+		if(Random((T)1,len*(len+1))<=len-1)
+		{
+			l=r=Random(range_l,range_r);
+			return;
+		}
+		l=Random(range_l,range_r);
+		r=Random(range_l,range_r);
+		if(r<l)
+		{
+			std::swap(l,r);
+		}
+	}
+	struct HashPair
+	{
+		template<class T1,class T2>
+		inline size_t operator()(const std::pair<T1,T2>&p)const
+		{
+			auto hash1=std::hash<T1>{}(p.first);
+			auto hash2=std::hash<T2>{}(p.second);
+			return hash1^hash2;
+		}
+	};
 }
 namespace IO
 {
@@ -74,8 +149,8 @@ namespace IO
 	template<class T>
 	inline T ReadInt()
 	{
-		register T x(0);
-		register bool f(1);
+		T x(0);
+		bool f(1);
 		while(!IsNumber(read_ch)&&(~read_ch))
 		{
 			if(read_ch==45)
@@ -94,7 +169,7 @@ namespace IO
 	template<class T>
 	inline T ReadUInt()
 	{
-		register T x(0);
+		T x(0);
 		while(!IsNumber(read_ch)&&(~read_ch))
 		{
 			read_ch=GetChar();
@@ -109,8 +184,8 @@ namespace IO
 	template<class T>
 	inline T ReadKInt(const int hex)
 	{
-		register T x(0);
-		register bool f(1);
+		T x(0);
+		bool f(1);
 		while(!IsNumber_(hex,read_ch)&&(~read_ch))
 		{
 			if(read_ch==45)
@@ -129,7 +204,7 @@ namespace IO
 	template<class T>
 	inline T ReadUKInt(const int hex)
 	{
-		register T x(0);
+		T x(0);
 		while(!IsNumber_(hex,read_ch)&&(~read_ch))
 		{
 			read_ch=GetChar();
@@ -143,10 +218,10 @@ namespace IO
 	}
 	inline double ReadDouble()
 	{
-		register long long int_num(ReadInt<long long>());
+		long long int_num(ReadInt<long long>());
 		if(read_ch==46)
 		{
-			register double pow10(1.0),result(0);
+			double pow10(1.0),result(0);
 			read_ch=GetChar();
 			while(IsNumber(read_ch)&&(~read_ch))
 			{
@@ -177,9 +252,9 @@ namespace IO
 	{
 		x=ReadUInt<unsigned int>();
 	}
-	inline void ReadT(unsigned long long &x)
+	inline void ReadT(ULL &x)
 	{
-		x=ReadUInt<unsigned long long>();
+		x=ReadUInt<ULL>();
 	}
 	inline void ReadT(double &x)
 	{
@@ -203,13 +278,13 @@ namespace IO
 	{
 		x.number=ReadUKInt<unsigned int>(x.hex);
 	}
-	inline void ReadT(Number<unsigned long long> &x)
+	inline void ReadT(Number<ULL> &x)
 	{
-		x.number=ReadUKInt<unsigned long long>(x.hex);
+		x.number=ReadUKInt<ULL>(x.hex);
 	}
 	inline void ReadT(char *s)
 	{
-		register int len(0);
+		int len(0);
 		for(;!CanSee(read_ch)&&(~read_ch);read_ch=GetChar());
 		for(;CanSee(read_ch)&&(~read_ch);read_ch=GetChar())
 		{
@@ -293,7 +368,7 @@ namespace IO
 			PutChar(45);
 			x=-x;
 		}
-		WriteUInt<unsigned long long>((unsigned long long)x);
+		WriteUInt<ULL>((ULL)x);
 		if(len)
 		{
 			x-=(int)x;
@@ -301,14 +376,14 @@ namespace IO
 			while(len--)
 			{
 				x*=10;
-				if(!(unsigned long long)x)
+				if(!(ULL)x)
 				{
 					PutChar(48);
 				}
 			}
-			if((unsigned long long)x)
+			if((ULL)x)
 			{
-				WriteUInt<unsigned long long>((unsigned long long)x);
+				WriteUInt<ULL>((ULL)x);
 			}
 		}
 	}
@@ -328,9 +403,9 @@ namespace IO
 	{
 		WriteUInt<unsigned int>(x);
 	}
-	inline void WriteT(const unsigned long long x)
+	inline void WriteT(const ULL x)
 	{
-		WriteUInt<unsigned long long>(x);
+		WriteUInt<ULL>(x);
 	}
 	inline void WriteT(const double x)
 	{
@@ -359,7 +434,7 @@ namespace IO
 	{
 		WriteUKInt(x.number,x.hex,x.len);
 	}
-	inline void WriteT(const Number<unsigned long long> x)
+	inline void WriteT(const Number<ULL> x)
 	{
 		WriteUKInt(x.number,x.hex,x.len);
 	}
@@ -421,36 +496,92 @@ T Min(const T a,const Args ...args)
 template<typename T>
 inline void Swap(T &a,T &b)
 {
-	register T temp=a;
+	T temp=a;
 	a=b;
 	b=temp;
 }
-#include<windows.h>
+inline std::pair<int,int> UnorderedPair(const int a,const int b)
+{
+	return std::make_pair(Min(a,b),Max(a,b));
+}
+inline std::pair<int,int> EdgePair(const int a,const int b,const int link=1)
+{
+	if(link)
+	{
+		return UnorderedPair(a,b);
+	}
+	else
+	{
+		return std::make_pair(a,b);
+	}
+}
+inline long long EdgeNumber(const int a,const bool link)
+{
+	if(link)
+	{
+		return 1ll*a*(a-1)/2;
+	}
+	else
+	{
+		return 1ll*a*(a-1);
+	}
+}
+inline long long EdgeNumber(const int a,const int b,const bool link)
+{
+	if(link)
+	{
+		return 1ll*a*b;
+	}
+	else
+	{
+		return 1ll*a*b*2;
+	}
+}
 #define REP(i,first,last) for(int i=first;i<=last;++i)
 #define DOW(i,first,last) for(int i=first;last<=i;--i)
 #define RAND_INT Random(-(int)1e9,(int)1e9)
 #define RAND_LL Random(-(long long)5e17,(long long)5e17)
 #define _RAND_INT Random(0,(unsigned int)1e9)
-#define _RAND_LL Random(0,(unsigned long long)1e18)
+#define _RAND_LL Random(0,(ULL)1e18)
 #define _abc_ 'a','z'
 #define _ABC_ 'A','Z'
 #define NUM '0','9'
 #define CHAR 32,126
-std::vector<int>null_vector;
-std::vector<std::pair<int,int> >edge;
 class Graph
 {
 private:
+
 public:
 	std::vector<std::vector<int> >out_point;
 	bool link;
-	inline Graph(int n=0,bool l=0)
+	inline Graph()
+	{
+		link=0;
+	}
+	inline Graph(int n,bool l)
 	{
 		link=l;
 		REP(i,0,n)
 		{
-			out_point.push_back(null_vector);
+			out_point.push_back(std::vector<int>());
 		}
+	}
+	inline int Size()const
+	{
+		return out_point.size()-1;
+	}
+	inline int Edge()const
+	{
+		int res=0;
+		for(int i=1;i<out_point.size();++i)
+		{
+			res+=out_point[i].size();
+		}
+		if(link)
+		{
+			res>>=1;
+		}
+		return res;
 	}
 	inline void AddEdge(int form,int to)
 	{
@@ -465,16 +596,47 @@ public:
 		out_point.clear();
 	}
 	#define FOR(edge,now) for(int edge_i=0,to=edge.out_point[now].size()?edge.out_point[now][0]:0;edge_i<edge.out_point[now].size();edge_i++,to=edge.out_point[now][edge_i])
+	inline void ReShuffer(const int root=0)
+	{
+		std::vector<int>id(out_point.size());
+		for(int i=0;i<id.size();i++)
+		{
+			id[i]=i;
+		}
+		MD::RandomShuffle(id.begin()+1,id.end());
+		if(root)
+		{
+			for(int i=1;i<id.size();i++)
+			{
+				if(id[i]==root)
+				{
+					Swap(id[i],id[root]);
+					break;
+				}
+			}
+		}
+		std::vector<std::vector<int> >new_out_point(out_point.size());
+		for(int i=1;i<id.size();i++)
+		{
+			for(auto to:out_point[i])
+			{
+				new_out_point[id[i]].push_back(id[to]);
+			}
+		}
+		new_out_point.swap(out_point);
+		new_out_point.clear();
+	}
 	inline void Write()
 	{
 		if(!out_point.size())
 		{
 			return;
 		}
+		std::vector<std::pair<int,int> >edge;
 		edge.clear();
-		REP(i,1,out_point.size()-1)
+		for(int i=1;i<out_point.size();++i)
 		{
-			for(int edge_i=0,to=out_point[i].size()?out_point[i][0]:0;edge_i<out_point[i].size();edge_i++,to=out_point[i][edge_i])
+			for(auto to:out_point[i])
 			{
 				if(link)
 				{
@@ -489,25 +651,25 @@ public:
 				}
 			}
 		}
-		std::random_shuffle(edge.begin(),edge.end());
+		MD::RandomShuffle(edge.begin(),edge.end());
 		if(edge.size())
 		{
-			REP(i,0,edge.size()-1)
+			for(auto e:edge)
 			{
 				if(link)
 				{
-					if(rand()&1)
+					if(MD::Random()&1)
 					{
-						IO::Writeln(edge[i].first,' ',edge[i].second);
+						IO::Writeln(e.first,' ',e.second);
 					}
 					else
 					{
-						IO::Writeln(edge[i].second,' ',edge[i].first);
+						IO::Writeln(e.second,' ',e.first);
 					}
 				}
 				else
 				{
-					IO::Writeln(edge[i].first,' ',edge[i].second);
+					IO::Writeln(e.first,' ',e.second);
 				}
 			}
 		}
@@ -519,10 +681,11 @@ public:
 		{
 			return;
 		}
+		std::vector<std::pair<int,int> >edge;
 		edge.clear();
-		REP(i,1,out_point.size()-1)
+		for(int i=1;i<out_point.size();++i)
 		{
-			for(int edge_i=0,to=out_point[i].size()?out_point[i][0]:0;edge_i<out_point[i].size();edge_i++,to=out_point[i][edge_i])
+			for(auto to:out_point[i])
 			{
 				if(link)
 				{
@@ -537,451 +700,471 @@ public:
 				}
 			}
 		}
-		std::random_shuffle(edge.begin(),edge.end());
+		MD::RandomShuffle(edge.begin(),edge.end());
 		if(edge.size())
 		{
-			REP(i,0,edge.size()-1)
+			for(auto e:edge)
 			{
 				if(link)
 				{
-					if(rand()&1)
+					if(MD::Random()&1)
 					{
-						IO::Writeln(edge[i].first,' ',edge[i].second,' ',MakeValue());
+						IO::Writeln(e.first,' ',e.second,' ',MakeValue());
 					}
 					else
 					{
-						IO::Writeln(edge[i].second,' ',edge[i].first,' ',MakeValue());
+						IO::Writeln(e.second,' ',e.first,' ',MakeValue());
 					}
 				}
 				else
 				{
-					IO::Writeln(edge[i].first,' ',edge[i].second);
+					IO::Writeln(e.first,' ',e.second,' ',MakeValue());
+				}
+			}
+		}
+	}
+	inline void Merge(const Graph &a,int add_edge=0,int l=-1,int r=-1)
+	{
+		int nown=out_point.size()-1;
+		for(int i=1;i<a.out_point.size();++i)
+		{
+			out_point.push_back(std::vector<int>());
+			for(auto to:a.out_point[i])
+			{
+				out_point.back().push_back(to+nown);
+			}
+		}
+		if(add_edge==0)
+		{
+			return;
+		}
+		if(l==-1)
+		{
+			l=1;
+		}
+		if(r==-1)
+		{
+			r=a.Size();
+		}
+		long long edge_num=1ll*nown*(r-l+1);
+		if(edge_num<add_edge)
+		{
+			std::cerr<<"Graph.Merge Error "<<edge_num<<" < "<<add_edge<<std::endl;
+			exit(0);
+		}
+		if(add_edge>edge_num/2)
+		{
+			std::vector<std::pair<int,int>>edge;
+			for(int i=1;i<=nown;++i)
+			{
+				for(int j=l;j<=r;++j)
+				{
+					edge.push_back(std::make_pair(i,j+nown));
+				}
+			}
+			MD::RandomShuffle(edge.begin(),edge.end());
+			for(int i=0;i<add_edge;++i)
+			{
+				out_point[edge[i].first].push_back(edge[i].second);
+				if(link)
+				{
+					out_point[edge[i].second].push_back(edge[i].first);
+				}
+			}
+		}
+		else
+		{
+			std::unordered_set<std::pair<int,int>,MD::HashPair>hash;
+			for(int i=0;i<add_edge;++i)
+			{
+				int u=MD::Random(1,nown);
+				int v=MD::Random(l,r)+nown;
+				while(hash.find(std::make_pair(u,v))!=hash.end())
+				{
+					u=MD::Random(1,nown);
+					v=MD::Random(l,r)+nown;
+				}
+				out_point[u].push_back(v);
+				hash.insert(std::make_pair(u,v));
+				if(link)
+				{
+					out_point[v].push_back(u);
+					hash.insert(std::make_pair(v,u));
 				}
 			}
 		}
 	}
 };
-template<class T=int>class GraphWithValue
+inline long long EdgeNumber(const Graph &g)
 {
-
-};
+	return EdgeNumber(g.Size(),g.link);
+}
 namespace MD
 {
-	inline unsigned long long RandomNumber(unsigned long long a)
+	const int TREE_KIND=5;
+	inline Graph MakeSimpleTree(const int n,const int kind,const int link=1)
 	{
-		seed^=seed<<13;
-		seed^=seed>>7;
-		seed^=seed<<17;
-		return seed%a;
-	}
-	template<typename T>
-	inline T Random(T f,T e)
-	{
-		return f+RandomNumber((unsigned long long)(e-f+1));
-	}
-	template<typename T>
-	inline T Random(T a)
-	{
-		return RandomNumber((unsigned long long)a);
-	}
-	inline char RandomChar(char s[],int len=-1)
-	{
-		return s[RandomNumber(~len?len:strlen(s))];
-	}
-	template<typename T>
-	inline void MakeRange(T &l,T &r,T range_l,T range_r)
-	{
-		T len=range_r-range_l+1;
-		if(Random((T)1,len*(len+1))<=len-1)
+		Graph g(n,link);
+		if(n==1)
 		{
-			l=r=Random(range_l,range_r);
-			return;
+			return g;
 		}
-		l=Random(range_l,range_r);
-		r=Random(range_l,range_r);
-		if(r<l)
+		if(n==2)
 		{
-			std::swap(l,r);
+			g.AddEdge(1,2);
+			return g;
 		}
-	}
-	std::vector<int>f;
-	std::vector<int>sum;
-	inline void MakeTree(Graph &a,int n,int root=1,bool link=0,int opt=0,int k=2)
-	{
-		a=Graph(n,link);
-		if(n<2)
+		if(kind==0)
 		{
-			return;
-		}
-		if(opt==0)
-		{
-			f.clear();
-			REP(i,1,n)
-			{
-				f.push_back(i);
-			}
-			std::random_shuffle(f.begin(),f.end());
-			REP(i,1,n-1)
-			{
-				if(f[i]==root)
-				{
-					std::swap(f[i],f[0]);
-					break;
-				}
-			}
-			REP(i,1,n-1)
-			{
-				int father=f[Random(i)];
-				a.AddEdge(father,f[i]);
-			}
-			f.clear();
-		}
-		if(opt==1)
-		{
-			f.clear();
-			REP(i,1,n)
-			{
-				f.push_back(i);
-			}
-			std::random_shuffle(f.begin(),f.end());
-			REP(i,1,n-1)
-			{
-				if(f[i]==root)
-				{
-					std::swap(f[i],f[0]);
-					break;
-				}
-			}
-			REP(i,1,n-1)
-			{
-				a.AddEdge(f[i-1],f[i]);
-			}
-			f.clear();
-		}
-		if(opt==2)
-		{
-			REP(i,1,n)
-			{
-				if(i^root)
-				{
-					a.AddEdge(root,i);
-				}
-			}
-		}
-		if(opt==3)
-		{
-			f.clear();
-			sum.clear();
-			REP(i,1,n)
-			{
-				f.push_back(i);
-				sum.push_back(0);
-			}
-			std::random_shuffle(f.begin(),f.end());
-			REP(i,1,n-1)
-			{
-				if(f[i]==root)
-				{
-					std::swap(f[i],f[0]);
-					break;
-				}
-			}
-			REP(i,1,n-1)
-			{
-				int father=f[Random(i)];
-				while(sum[father-1]==k)
-				{
-					father=f[Random(i)];
-				}
-				sum[father-1]++;
-				a.AddEdge(father,f[i]);
-			}
-			f.clear();
-			sum.clear();
-		}
-		if(opt==4)
-		{
-			f.clear();
-			REP(i,0,n)
-			{
-				f.push_back(i);
-			}
-			std::swap(f[1],f[root]);
-			std::random_shuffle(f.begin()+2,f.end());
 			REP(i,2,n)
 			{
-				a.AddEdge(f[i/2],f[i]);
+				int father=Random(1,i-1);
+				g.AddEdge(father,i);
 			}
-			f.clear();
+			return g;
 		}
-	}
-	inline void MakeTree(Graph &a,int *father_array,int n,int root=1,bool link=0,int opt=0,int k=2)
-	{
-		a=Graph(n,link);
-		if(n<2)
+		if(kind==1)
 		{
-			return;
-		}
-		if(opt==0)
-		{
-			f.clear();
-			REP(i,1,n)
-			{
-				f.push_back(i);
-			}
-			std::random_shuffle(f.begin(),f.end());
-			REP(i,1,n-1)
-			{
-				if(f[i]==root)
-				{
-					std::swap(f[i],f[0]);
-					break;
-				}
-			}
-			REP(i,1,n-1)
-			{
-				int father=f[Random(i)];
-				a.AddEdge(father,f[i]);
-				father_array[f[i]]=father;
-			}
-			f.clear();
-		}
-		if(opt==1)
-		{
-			f.clear();
-			REP(i,1,n)
-			{
-				f.push_back(i);
-			}
-			std::random_shuffle(f.begin(),f.end());
-			REP(i,1,n-1)
-			{
-				if(f[i]==root)
-				{
-					std::swap(f[i],f[0]);
-					break;
-				}
-			}
-			REP(i,1,n-1)
-			{
-				a.AddEdge(f[i-1],f[i]);
-				father_array[f[i]]=f[i-1];
-			}
-			f.clear();
-		}
-		if(opt==2)
-		{
-			REP(i,1,n)
-			{
-				if(i^root)
-				{
-					a.AddEdge(root,i);
-					father_array[i]=root;
-				}
-			}
-		}
-		if(opt==3)
-		{
-			f.clear();
-			sum.clear();
-			REP(i,1,n)
-			{
-				f.push_back(i);
-				sum.push_back(0);
-			}
-			std::random_shuffle(f.begin(),f.end());
-			REP(i,1,n-1)
-			{
-				if(f[i]==root)
-				{
-					std::swap(f[i],f[0]);
-					break;
-				}
-			}
-			REP(i,1,n-1)
-			{
-				int father=f[Random(i)];
-				while(sum[father-1]==k)
-				{
-					father=f[Random(i)];
-				}
-				sum[father-1]++;
-				a.AddEdge(father,f[i]);
-				father_array[f[i]]=father;
-			}
-			f.clear();
-			sum.clear();
-		}
-		if(opt==4)
-		{
-			f.clear();
-			REP(i,0,n)
-			{
-				f.push_back(i);
-			}
-			std::swap(f[1],f[root]);
-			std::random_shuffle(f.begin()+2,f.end());
 			REP(i,2,n)
 			{
-				a.AddEdge(f[i/2],f[i]);
-				father_array[f[i]]=f[i/2];
+				int father=i-1;
+				g.AddEdge(father,i);
 			}
-			f.clear();
+			return g;
 		}
-	}
-	struct Hash_Pair
-	{
-		template<class T1,class T2>
-		inline size_t operator()(const std::pair<T1,T2>&p)const
+		if(kind==2)
 		{
-			auto hash1=std::hash<T1>{}(p.first);
-			auto hash2=std::hash<T2>{}(p.second);
-			return hash1^hash2;
-		}
-	};
-	std::unordered_map<std::pair<int,int>,bool,Hash_Pair>Hash;
-	inline void MakeGraph(Graph &gra,int n,int m,bool connect=0,bool link=0,int opt=0)
-	{
-		gra=Graph(n,link);
-		if(n<2)
-		{
-			return;
-		}
-		if(opt==0)
-		{
-			if(link)
+			REP(i,2,n)
 			{
-				if(connect)
+				int father=1;
+				g.AddEdge(father,i);
+			}
+			return g;
+		}
+		if(kind==3)
+		{
+			REP(i,2,n)
+			{
+				int father=i>>1;
+				g.AddEdge(father,i);
+			}
+			return g;
+		}
+		if(kind==4)
+		{
+			int p=Random(3,Min(10,n));
+			REP(i,2,p)
+			{
+				int father=1;
+				g.AddEdge(father,i);
+			}
+			REP(i,p+1,n)
+			{
+				int father=Random(2,p);
+				g.AddEdge(father,i);
+			}
+		}
+		if(kind==5)
+		{
+			int p=Random(n/3,n/3*2);
+			p=Max(p,2);
+			REP(i,2,p)
+			{
+				int father=1;
+				g.AddEdge(father,i);
+			}
+			REP(i,p+1,n)
+			{
+				int father=Random(2,p);
+				g.AddEdge(father,i);
+			}
+		}
+		return g;
+	}
+	inline Graph MixTree(const int n,const int link=1,const int div=3)
+	{
+		Graph g(n,link);
+		if(n==1)
+		{
+			return g;
+		}
+		if(n<15)
+		{
+			g=MakeSimpleTree(n/2,Random(0,TREE_KIND),link);
+			Graph g1=MakeSimpleTree(n-n/2,Random(0,TREE_KIND),link);
+			g.Merge(g1,1,1,1);
+			return g;
+		}
+		int n1=n/Max(div,3)+Random(-5,5);
+		n1=Max(n1,2);
+		n1=Min(n1,n-3);
+		int n2=n/Max(div,3)+Random(-5,5);
+		n2=Max(n2,2);
+		n2=Min(n2,n-n1);
+		int el=n-n1-n2;
+		g=MakeSimpleTree(n1,1,link);
+		g.Merge(MakeSimpleTree(n2,2,link),1,1,1);
+		for(int i(0);i<30;++i)
+		{
+			if(el==0)
+			{
+				break;
+			}
+			int m=Random(1,Min(el,Max(el/4,5)));
+			Graph g1=MakeSimpleTree(m,Random(0,TREE_KIND),link);
+			g.Merge(g1,1,1,1);
+			el-=m;
+		}
+		if(el)
+		{
+			Graph g1=MakeSimpleTree(el,Random(0,TREE_KIND),link);
+			g.Merge(g1,1,1,1);
+		}
+		return g;
+	}
+	inline Graph GraphAddEdge(const Graph &g,int add_edge)
+	{
+		if(add_edge==0)
+		{
+			return g;
+		}
+		Graph res=g;
+		long long edge_num=EdgeNumber(g.Size(),g.link);
+		std::unordered_set<std::pair<int,int>,MD::HashPair>hash;
+		edge_num-=g.Edge();
+		if(add_edge>edge_num)
+		{
+			std::cerr<<"GraphAddEdge Error "<<add_edge<<" > "<<edge_num<<std::endl;
+			exit(0);
+		}
+		if(add_edge+g.Edge()>edge_num/2)
+		{
+			std::vector<std::pair<int,int>>edge;
+			for(int i=1;i<g.Size();++i)
+			{
+				for(int j=i+1;j<=g.Size();++j)
 				{
-					if(m<n-1)
+					if(hash.find(EdgePair(i,j,g.link))==hash.end())
 					{
-						return;
+						edge.push_back(EdgePair(i,j,g.link));
 					}
-					Hash.clear();
-					MakeTree(gra,n,Random(1,n),1);
-					m-=n-1;
-					REP(i,1,n)
+					if(!g.link)
 					{
-						FOR(gra,i)
+						if(hash.find(EdgePair(j,i,g.link))==hash.end())
 						{
-							Hash[std::make_pair(i,to)]=
-							Hash[std::make_pair(to,i)]=1;
+							edge.push_back(EdgePair(j,i,g.link));
 						}
 					}
-					REP(i,1,m)
-					{
-						int a=Random(1,n),b=Random(1,n);
-						while(a==b)
-						{
-							b=Random(1,n);
-						}
-						while(Hash[std::make_pair(a,b)])
-						{
-							a=Random(1,n);
-							b=Random(1,n);
-							while(a==b)
-							{
-								b=Random(1,n);
-							}
-						}
-						Hash[std::make_pair(a,b)]=
-						Hash[std::make_pair(b,a)]=1;
-						gra.AddEdge(a,b);
-					}
-					Hash.clear();
 				}
-				else
+			}
+			MD::RandomShuffle(edge.begin(),edge.end());
+			for(int i=0;i<add_edge;++i)
+			{
+				res.AddEdge(edge[i].first,edge[i].second);
+			}
+		}
+		else
+		{
+			for(int i=0;i<add_edge;++i)
+			{
+				int u=Random(1,res.Size());
+				int v=Random(1,res.Size());
+				while(u==v||hash.find(EdgePair(u,v,res.link))!=hash.end())
 				{
-					Hash.clear();
-					REP(i,1,m)
-					{
-						int a=Random(1,n),b=Random(1,n);
-						while(a==b)
-						{
-							b=Random(1,n);
-						}
-						while(Hash[std::make_pair(a,b)])
-						{
-							a=Random(1,n);
-							b=Random(1,n);
-							while(a==b)
-							{
-								b=Random(1,n);
-							}
-						}
-						Hash[std::make_pair(a,b)]=
-						Hash[std::make_pair(b,a)]=1;
-						gra.AddEdge(a,b);
-					}
-					Hash.clear();
+					u=Random(1,res.Size());
+					v=Random(1,res.Size());
 				}
+				hash.insert(EdgePair(u,v,res.link));
+				res.AddEdge(u,v);
+			}
+		}
+		return res;
+	}
+	const int GRAPH_KIND=3;
+	inline Graph MakeSimpleGraph(const int n,const int m,const int kind,const int link=1)
+	{
+		Graph g(n,link);
+		if(m<n-1)
+		{
+			std::cerr<<"MakeSimpleGraph Error"<<" "<<m<<" < "<<n-1<<std::endl;
+			exit(0);
+		}
+		if(kind==0)
+		{
+			return GraphAddEdge(MixTree(n,link),m-(n-1));
+		}
+		if(kind==1)
+		{
+			if(m<n)
+			{
+				return g;
+			}
+			for(int i=2;i<=n;++i)
+			{
+				g.AddEdge(i-1,i);
+			}
+			g.AddEdge(n,1);
+			return GraphAddEdge(g,m-n);
+		}
+		if(kind==2)
+		{
+			g=MakeSimpleTree(n,1,link);
+			return GraphAddEdge(g,m-(n-1));
+		}
+		if(kind==3)
+		{
+			g=MakeSimpleTree(n,2,link);
+			return GraphAddEdge(g,m-(n-1));
+		}
+		return g;
+	}
+	inline Graph MixGraphConnect(const int n,const int m,const int link=1,const int div=4)
+	{
+		Graph g(n,link);
+		if(m<n-1)
+		{
+			std::cerr<<"MixGraphConnect Error"<<" "<<m<<" < "<<n-1<<std::endl;
+			exit(0);
+		}
+		if(n<15||m<n+50)
+		{
+			g=MixTree(n,link);
+			return GraphAddEdge(g,m-(n-1));
+		}
+		int n1=n/Max(div,4)+Random(-5,5);
+		n1=Max(n1,3);
+		n1=Min(n1,n-6);
+		int n2=n/Max(div,4)+Random(-5,5);
+		n2=Max(n2,3);
+		n2=Min(n2,n-n1-3);
+		int n3=n/Max(div,4)+Random(-5,5);
+		n3=Max(n3,3);
+		n3=Min(n3,n-n1-n2);
+		int el=n-n1-n2-n3;
+		int add1=Random(2,8);
+		int add2=Random(2,8);
+		int addn1=Random(2,8);
+		int addn2=Random(2,8);
+		int addn3=Random(2,8);
+		addn1=Min((long long)addn1,EdgeNumber(n1,link)-n1);
+		addn2=Min((long long)addn2,EdgeNumber(n2,link)-n2);
+		addn3=Min((long long)addn3,EdgeNumber(n3,link)-n3);
+		add1=Min((long long)add1,1ll*n1*n2);
+		add2=Min((long long)add2,1ll*(n1+n2)*n3);
+		int eledge=m-n1-n2-n3-add1-add2-addn1-addn2-addn3-el;
+		g=MakeSimpleGraph(n1,n1+addn1,1,link);
+		g.Merge(MakeSimpleGraph(n2,n2+addn2,2,link),add1);
+		g.Merge(MakeSimpleGraph(n3,n3+addn3,3,link),add2);
+		for(int i(0);i<30;++i)
+		{
+			if(el==0||eledge==0)
+			{
+				break;
+			}
+			int use_n=Random(1,Min(el,Max(el/4,5)));
+			int use_m=Random(0,Min(eledge,Max(eledge/4,5)));
+			use_m=Min(use_m,use_n*2);
+			if(use_m&&use_n>2)
+			{
+				int p=Random(0ll,Min(use_m-1ll,EdgeNumber(use_n,link)-use_n));
+				Graph g1=MakeSimpleGraph(use_n,use_n+p,Random(0,GRAPH_KIND),link);
+				g.Merge(g1,use_m-p);
 			}
 			else
 			{
-				if(connect)
-				{
-					if(m<n)
-					{
-						return;
-					}
-					Hash.clear();
-					REP(i,1,n)
-					{
-						f.push_back(i);
-					}
-					random_shuffle(f.begin(),f.end());
-					REP(i,0,n-1)
-					{
-						gra.AddEdge(f[i],f[(i+1)%n]);
-						Hash[std::make_pair(f[i],f[(i+1)%n])]=1;
-					}
-					m-=n;
-					REP(i,1,m)
-					{
-						int a=Random(1,n),b=Random(1,n);
-						while(a==b)
-						{
-							b=Random(1,n);
-						}
-						while(Hash[std::make_pair(a,b)])
-						{
-							a=Random(1,n);
-							b=Random(1,n);
-							while(a==b)
-							{
-								b=Random(1,n);
-							}
-						}
-						Hash[std::make_pair(a,b)]=1;
-						gra.AddEdge(a,b);
-					}
-					Hash.clear();
-				}
-				else
-				{
-					Hash.clear();
-					REP(i,1,m)
-					{
-						int a=Random(1,n),b=Random(1,n);
-						while(a==b)
-						{
-							b=Random(1,n);
-						}
-						while(Hash[std::make_pair(a,b)])
-						{
-							a=Random(1,n);
-							b=Random(1,n);
-							while(a==b)
-							{
-								b=Random(1,n);
-							}
-						}
-						Hash[std::make_pair(a,b)]=1;
-						gra.AddEdge(a,b);
-					}
-					Hash.clear();
-				}
+				Graph g1=MakeSimpleTree(use_n,Random(0,TREE_KIND),link);
+				g.Merge(g1,1);
+				g=GraphAddEdge(g,use_m);
 			}
+			el-=use_n;
+			eledge-=use_m;
 		}
+		if(el)
+		{
+			Graph g1=MixTree(el,link);
+			g.Merge(g1,eledge+1);
+		}
+		else
+		{
+			g=GraphAddEdge(g,eledge);
+		}
+		return g;
 	}
+	inline Graph MixGraph(const int n,const int m,const int link=1,int connect_num=-1)
+	{
+		if(connect_num==-1)
+		{
+			int max_=n/5;
+			int min_=2;
+			if(m<n)
+			{
+				min_=Max(min_,n-m);
+			}
+			if(max_<min_)
+			{
+				max_=Random(min_,n);
+			}
+			connect_num=Random(min_,max_);
+		}
+		std::vector<int>vex(connect_num);
+		std::vector<int>edg(connect_num);
+		vex[0]=n/3;
+		int el=n-vex[0];
+		for(int i=1;i<connect_num;++i)
+		{
+			vex[i]=1;
+			--el;
+		}
+		for(int i=0;i<el;++i)
+		{
+			int id=Random(0,connect_num+connect_num/3);
+			id%=connect_num;
+			vex[id]++;
+		}
+		edg[0]=m/3;
+		edg[0]=Min((long long)edg[0],EdgeNumber(vex[0],link));
+		edg[0]=Max(vex[0]-1,edg[0]);
+		int ele=m-edg[0];
+		for(int i=1;i<connect_num;++i)
+		{
+			edg[i]=vex[i]-1;
+			ele-=edg[i];
+		}
+		int tp=ele*2;
+		for(int i=0;i<tp;++i)
+		{
+			if(!ele)
+			{
+				break;
+			}
+			int id=Random(0,connect_num+connect_num/3);
+			id%=connect_num;
+			if(edg[id]==EdgeNumber(vex[id],link))
+			{
+				continue;
+			}
+			edg[id]++;
+			--ele;
+		}
+		Graph g=MixGraphConnect(vex[0],edg[0],link);
+		int sum=0;
+		for(int i=0;i<connect_num;++i)
+		{
+			sum+=edg[i];
+		}
+		for(int i=1;i<connect_num;++i)
+		{
+			Graph g1=MixGraphConnect(vex[i],edg[i],link);
+			g.Merge(g1,0);
+		}
+		if(ele)
+		{
+			g=GraphAddEdge(g,ele);
+		}
+		return g;
+	}
+	// inline Graph MakeDAG(const int n,const int m)
+	// {
+
+	// }
 }
