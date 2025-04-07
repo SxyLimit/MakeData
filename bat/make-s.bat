@@ -18,25 +18,28 @@ if NOT exist %pro1% (
     exit /b
 )
 
+set /p s=Subtask: 
+set /p num=Number: 
+
 if not exist data mkdir data
 
-set /p left=Left: 
-set /p right=Right: 
-
-for /L %%i in (%left%, 1, %right%) do (
-    echo Making data: %%i.in
-    %pro2% >data\%%i.in
-    echo Making data: %%i.out
-    %pro1% <data\%%i.in >data\%%i.out
+for /L %%i in (1,1,%num%) do (
+    echo Making data: %s%-%%i.in
+    %pro2% >data\%s%-%%i.in
+    echo Making data: %s%-%%i.out
+    %pro1% <data\%s%-%%i.in >data\%s%-%%i.out
 )
 
-set "newname=generator(%left%-%right%).cpp"
+set "newname=generator(subtask %s%,1-%num%).cpp"
 set "prename=generator.cpp"
 
 echo Saving !prename! to !newname!
 
 if exist !prename! (
-    copy /Y !prename! data\!newname!>nul
+    (
+        echo // Subtask: %s%
+        type !prename!
+    ) > data\!newname!
     echo Copied !prename! to data\!newname!
 ) else (
     echo !prename! does not exist!
