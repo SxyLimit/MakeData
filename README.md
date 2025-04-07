@@ -76,7 +76,7 @@
 
 包含图中边从信息和图的类型 $link$（若为 $1$ 则为无向图，否则为有向图）。
 
-通过 `Graph(n,link)` 初始化。
+通过 $\text{Graph(n,link)}$ 初始化。
 
 #### Size()
 
@@ -104,11 +104,11 @@
 
 #### Write()
 
-输出图，共 $Edge()$ 行，每行两个由空格隔开的整数，表示一条边。
+输出图，共 $\text{Edge()}$ 行，每行两个由空格隔开的整数，表示一条边。
 
 #### Write(F())
 
-输出图，共 $Edge()$ 行，每行三个由空格隔开的整数，表示一条边和由 $F()$ 生成的边权。
+输出图，共 $\text{Edge()}$ 行，每行三个由空格隔开的整数，表示一条边和由 $\text{F()}$ 生成的边权。
 
 #### Merge(g,add_edge=0,l=-1,r=-1)
 
@@ -118,26 +118,68 @@
 
 其中在第二个图中选择的点的编号在 $[l,r]$ 范围内。若为 $-1$ 则设置为默认值 $l=1$ 和 $r=g.Size()$。
 
-#### MakeSimpleTree(n,kind,link)
+### MakeSimpleTree(n,kind,link)
 
 生成一个 $Graph(n,link)$ 的树。
 
 生成的树都比较特殊，更具 $kind$ 分类为（其中若 $link=0$，树为有根树，连边均从编号较小的点连向编号较大的点）：
 
-0. 每个大于 $1$ 的节点会选择一个编号小于自己的点连边。
-1. 每个大于 $1$ 的节点会选择一个编号为自己减一的点连边。（为一条长度为 $n$ 的链）
-2. 每个大于 $1$ 的节点会选择 $1$ 号点连边。（为包含 $n-1$ 个叶节点的菊花树）
-3. 每个大于 $1$ 的节点会选择自己编号除以二向下取整的编号的点连边。（完全二叉树）
-4. 会选择 $[3,10]$ 个点与 $1$ 连边，剩下的点与这几个点连边。
+0. 每个大于 $1$ 的节点会选择一个编号小于自己的点连边；
+1. 每个大于 $1$ 的节点会选择一个编号为自己减一的点连边；（为一条长度为 $n$ 的链）
+2. 每个大于 $1$ 的节点会选择 $1$ 号点连边；（为包含 $n-1$ 个叶节点的菊花树）
+3. 每个大于 $1$ 的节点会选择自己编号除以二向下取整的编号的点连边；（完全二叉树）
+4. 会选择 $[3,10]$ 个点与 $1$ 连边，剩下的点与这几个点连边；
 5. 会选择 $[\lfloor\frac{n}{3}\rfloor,2\lfloor\frac{n}{3}\rfloor]$ 个点与 $1$ 连边，剩下的点与这几个点连边。
 
-#### MixTree(n,link,div=3)
+### MixTree(n,link,div=3)
 
-生成一个 $Graph(n,link)$ 的树。
+生成一个 $\text{Graph(n,link)}$ 的树。
 
-通过 $MakeSimpleTree$ 函数生成的特殊的树通过拼接生成一个较大的树。
+通过 $\text{MakeSimpleTree()}$ 函数生成的特殊的树通过拼接生成一个较大的树。
 
 当 $n$ 较大时（阈值为 $15$），会先构造大小约为 $\frac{n}{div}$ 大小的链（$kind$ 为 $1$）和菊花树（$kind$ 为 $2$）树合并。剩余节点生成若干较小的树（随机选择 $kind$）继续合并。
 
+### GraphAddEdge(g,add_edge)
+
+在图 $g$ 中添加 $add\_edge$ 条边，保证与原图无重边和自环。
+
+该函数会判断图是否稠密，通过不同方式加边。
+
+### MakeSimpleGraph(n,m,kind,link)
+
+生成一个 $\text{Graph(n,link)}$ 且包含 $m$ 条边的图。
+
+需要注意必须满足 $m\geq n-1$。
+
+生成的图都比较特殊，更具 $kind$ 分类为：
+
+0. 通过 $\text{MixTree(n,link)}$ 生成一颗 $n$ 个节点的树，并通过 $\text{GraphAddEdge()}$ 添加 $m-n+1$ 条边；
+1. 这个 $kind$ 必须满足 $m\geq n$，会先生成一个 $n$ 个节点的环，再添加 $m-n$ 条边；
+2. 生成链，并添加 $m-n+1$ 条边；
+3. 生成菊花树，并添加 $m-n+1$ 条边。
+
+### MixGraphConnect(n,m,link,div=4)
+
+通过 $\text{MakeSimpleGraph()}$ 函数生成一个连通图。
+
+### MixGraph(n,m,link,connect_num=-1)
+
+通过 $\text{MixGraphConnect()}$ 尝试生成 $connect\_num$（若为 $-1$ 则会在一个范围内随机）个连通子图构成的图。
+
+如果剩余的边过多可能最后连通块个数会小于 $connect\_num$。
+
 ## define
 
+## bat
+
+在文件夹中需要有 `std.cpp` 和 `generator.cpp`。
+
+### compile.bat
+
+编译 `std.cpp` 和 `generator.cpp`。
+
+### make.bat
+
+输入 $left$ 和 $right$，会通过 `generator.exe` 生成 `i.in` 并使用 `std.exe` 获得 `i.out`，其中 $i\in[left,right]$。
+
+生成的数据会保存到 `/data` 文件夹中（不存在会尝试新建该文件夹），同时会复制 `generator.cpp` 到文件夹中的 `generator(left-right).cpp` 文件。
