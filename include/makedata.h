@@ -1,8 +1,10 @@
 #include<bits/stdc++.h>
-#include<windows.h>
+#include<chrono>
 #define RWRI(i,f,l) for(int i(f);i<=l;Write(i==l?'\n':' '),++i)
 #define ULL unsigned long long
 #define LL long long
+const int INF=1000000000;
+const LL INFL=1000000000000000000LL;
 namespace MD
 {
 	ULL seed=233;
@@ -45,16 +47,21 @@ namespace MD
 	}
 	
 	template<typename T>
-	inline T Random(T f,T e)
+	inline T Random(const T f,const T e)
 	{
+		if(e<f)
+		{
+			std::cerr<<"Random Error "<<f<<" > "<<e<<std::endl;
+			exit(0);
+		}
 		return f+Random()%(e-f+1);
 	}
 	template<typename T>
-	inline T Random(T a)
+	inline T Random(const T a)
 	{
 		return Random()%a;
 	}
-	inline char RandomChar(char s[],int len=-1)
+	inline char RandomChar(const char s[],const int len=-1)
 	{
 		return s[Random()%(~len?len:strlen(s))];
 	}
@@ -74,14 +81,23 @@ namespace MD
 			std::swap(l,r);
 		}
 	}
-	struct HashPair
+	class HashPair
 	{
+		public:
 		template<class T1,class T2>
 		inline size_t operator()(const std::pair<T1,T2>&p)const
 		{
 			auto hash1=std::hash<T1>{}(p.first);
 			auto hash2=std::hash<T2>{}(p.second);
 			return hash1^hash2;
+		}
+	};
+	template<int L,int R>class RandomC
+	{
+		public:
+		inline int operator ()()const
+		{
+			return Random<int>(L,R);
 		}
 	};
 }
@@ -472,6 +488,32 @@ namespace IO
 		PutChar(10);
 		exit(0);
 	}
+	template<class T>
+	inline void WriteArray(const T *arr,const int n,const char ch=' ')
+	{
+		for(int i=1;i<=n;++i)
+		{
+			Write(arr[i]);
+			if(i<n)
+			{
+				Write(ch);
+			}
+		}
+		Writeln();
+	}
+	template<class WriteFunction>
+	inline void WriteArrayByFunction(const int n,WriteFunction MakeValue,const char ch=' ')
+	{
+		for(int i=1;i<=n;++i)
+		{
+			Write(MakeValue());
+			if(i<n)
+			{
+				Write(ch);
+			}
+		}
+		Writeln();
+	}
 }
 template<typename T>
 inline T Max(const T a,const T b)
@@ -539,10 +581,10 @@ inline long long EdgeNumber(const int a,const int b,const bool link)
 }
 #define REP(i,first,last) for(int i=first;i<=last;++i)
 #define DOW(i,first,last) for(int i=first;last<=i;--i)
-#define RAND_INT Random(-(int)1e9,(int)1e9)
-#define RAND_LL Random(-(long long)5e17,(long long)5e17)
-#define _RAND_INT Random(0,(unsigned int)1e9)
-#define _RAND_LL Random(0,(ULL)1e18)
+#define RAND_INT Random(-(int)INF,(int)INF)
+#define RAND_LL Random(-(long long)INFL/2,(long long)INFL/2)
+#define _RAND_INT Random(0LL,(unsigned int)INF)
+#define _RAND_LL Random(0LL,(ULL)INFL)
 #define _abc_ 'a','z'
 #define _ABC_ 'A','Z'
 #define NUM '0','9'
@@ -674,8 +716,8 @@ public:
 			}
 		}
 	}
-	template<typename T>
-	inline void Write(T(*MakeValue)())
+	template<class WriteFunction>
+	inline void Write(WriteFunction MakeValue)
 	{
 		if(!out_point.size())
 		{
@@ -801,7 +843,98 @@ inline long long EdgeNumber(const Graph &g)
 }
 namespace MD
 {
-	const int TREE_KIND=5;
+	namespace MillerRabin
+	{
+		const int PRIME[168]={2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,103,107,109,113,127,131,137,139,149,151,157,163,167,173,179,181,191,193,197,199,211,223,227,229,233,239,241,251,257,263,269,271,277,281,283,293,307,311,313,317,331,337,347,349,353,359,367,373,379,383,389,397,401,409,419,421,431,433,439,443,449,457,461,463,467,479,487,491,499,503,509,521,523,541,547,557,563,569,571,577,587,593,599,601,607,613,617,619,631,641,643,647,653,659,661,673,677,683,691,701,709,719,727,733,739,743,751,757,761,769,773,787,797,809,811,821,823,827,829,839,853,857,859,863,877,881,883,887,907,911,919,929,937,941,947,953,967,971,977,983,991,997};
+		inline LL Pow(LL a,LL b,const LL mod)
+		{
+			LL result=1;
+			while(b)
+			{
+				if(b&1)
+				{
+					result=(__int128)result*a%mod;
+				}
+				a=(__int128)a*a%mod;
+				b>>=1;
+			}
+			return result;
+		}
+		const LL CHECK_NUMBER[7]={2,325,9375,28178,450775,9780504,1795265022};
+		inline bool IsPrime(const LL p)
+		{
+			if(p<3)
+			{
+				return p==2;
+			}
+			if(!(p&1))
+			{
+				return 0;
+			}
+			LL d(p-1),r(-1);
+			while(!(d&1))
+			{
+				d>>=1;
+				++r;
+			}
+			REP(i,0,6)
+			{
+				LL v=Pow(CHECK_NUMBER[i],d,p);
+				if(v<2||v==p-1)
+				{
+					continue;
+				}
+				REP(i,0,r)
+				{
+					v=(__int128)v*v%p;
+					if(v==p-1)
+					{
+						v=1;
+						break;
+					}
+					if(v==1)
+					{
+						return 0;
+					}
+				}
+				if(v^1)
+				{
+					return 0;
+				}
+			}
+			return 1;
+		}
+	}
+	template<typename T>
+	inline T RandomPrime(const T a)
+	{
+		T result=Random((T)2,a);
+		while(MillerRabin::IsPrime(result)==0)
+		{
+			result=Random((T)2,a);
+		}
+		return result;
+	}
+	inline void RandomPermutation(int *arr,const int n)
+	{
+		for(int i=1;i<=n;++i)
+		{
+			arr[i]=i;
+		}
+		RandomShuffle(arr+1,arr+n+1);
+	}
+	inline void RandomSameElement(int *arr,const int n,int round=-1)
+	{
+		if(round==-1)
+		{
+			round=Max(n/10,1);
+		}
+		REP(i,1,round)
+		{
+			arr[Random(1,n)]=arr[Random(1,n)];
+		}
+	}
+	const int TREE_KIND=6;
 	inline Graph MakeSimpleTree(const int n,const int kind,const int link=1)
 	{
 		Graph g(n,link);
@@ -876,6 +1009,18 @@ namespace MD
 			REP(i,p+1,n)
 			{
 				int father=Random(2,p);
+				g.AddEdge(father,i);
+			}
+		}
+		if(kind==6)
+		{
+			for(int i=2;i<=n;++i)
+			{
+				int father=i-1;
+				if(i&1)
+				{
+					father=i-2;
+				}
 				g.AddEdge(father,i);
 			}
 		}
@@ -997,6 +1142,7 @@ namespace MD
 		{
 			if(m<n)
 			{
+				std::cerr<<"MakeSimpleGraph Kind 1 Error"<<" "<<m<<" < "<<n<<std::endl;
 				return g;
 			}
 			for(int i=2;i<=n;++i)
