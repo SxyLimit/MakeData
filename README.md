@@ -38,6 +38,14 @@
 
 同 `Write()` 函数，但是会在输出完其中内容后输出一个回车。
 
+### WriteArray(arr,n,ch=' ')
+
+输出 $arr$ 的第 $1\sim n$ 项，相邻之间以 $ch$ 隔开，输出最后一个后输出一个回车。
+
+### WriteArrayByFunction(n,MakeValue,ch=' ')
+
+输出 $n$ 个以 $ch$ 隔开的，通过 $MakeValue$ 函数生成，输出最后一个后输出一个回车。
+
 ## namespace MD
 
 ### Srand()
@@ -67,6 +75,16 @@
 若 $len$ 为 $-1$ 则会在 $s$ 中随机一个字符返回。
 
 否则会在 $s$ 的 $[0,len)$ 中随机一个字符返回。
+
+### RandomPermutation(arr,n)
+
+在 $arr$ 的 $1\sim n$ 中生成一个 $1\sim n$ 的排列。
+
+### RandomSameElement(arr,n,round=-1)
+
+当 $round=-1$ 时取 $round=\max\{\lfloor\frac{n}{10}\rfloor,1\}$
+
+在 $arr$ 中随机 $round$ 次将其中一个赋值为另一个。
 
 ### Graph
 
@@ -120,7 +138,7 @@
 
 ### MakeSimpleTree(n,kind,link)
 
-生成一个 $Graph(n,link)$ 的树。
+生成一个 $\text{Graph(n,link)}$ 的树。
 
 生成的树都比较特殊，更具 $kind$ 分类为（其中若 $link=0$，树为有根树，连边均从编号较小的点连向编号较大的点）：
 
