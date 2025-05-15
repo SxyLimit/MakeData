@@ -188,6 +188,12 @@
 
 ## define
 
+## generater.cpp
+
+给出了默认使用的 `generator.cpp`，通过 $WRITET$ 设置在一组数据中是否有多测，通过 $T$ 设置多测组数（若 $WRITET$ 设置为 $0$，则应该将 $T$ 设置为 $1$）。
+
+在 $Make()$ 函数中可以添加生成一组数据的代码，传入的参数 $testid$ 和 $dataid$ 分别表示当前生数据的编号（对应 $T$）以及数据点的编号（在下方 bat 中生成的文件的编号）。
+
 ## bat
 
 在文件夹中需要有 `std.cpp` 和 `generator.cpp`。
