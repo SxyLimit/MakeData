@@ -5,7 +5,6 @@ echo Opening generator.exe
 set pro2=generator.exe
 if NOT exist %pro2% (
     echo No generator.exe
-    pause >nul
     exit /b
 )
 
@@ -14,7 +13,6 @@ echo Opening std.exe
 set pro1=std.exe
 if NOT exist %pro1% (
     echo No std.exe
-    pause >nul
     exit /b
 )
 
@@ -25,7 +23,7 @@ set /p right=Right:
 
 for /L %%i in (%left%, 1, %right%) do (
     echo Making data: %%i.in
-    %pro2% >data\%%i.in
+    %pro2% %%i>data\%%i.in
     echo Making data: %%i.out
     %pro1% <data\%%i.in >data\%%i.out
 )
@@ -43,5 +41,3 @@ if exist !prename! (
 )
 
 echo Finish
-
-pause >nul
