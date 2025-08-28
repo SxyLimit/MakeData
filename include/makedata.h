@@ -100,6 +100,22 @@ namespace MD
 			return Random<int>(L,R);
 		}
 	};
+	template<LL L,LL R>class RandomLLC
+	{
+		public:
+		inline LL operator ()()const
+		{
+			return Random<LL>(L,R);
+		}
+	};
+	template<class GenerateFunction>
+	inline void GenerateArray(int *arr,const int n,GenerateFunction MakeValue)
+	{
+		for(int i=1;i<=n;++i)
+		{
+			arr[i]=MakeValue();
+		}
+	}
 }
 namespace IO
 {
@@ -501,8 +517,8 @@ namespace IO
 		}
 		Writeln();
 	}
-	template<class WriteFunction>
-	inline void WriteArrayByFunction(const int n,WriteFunction MakeValue,const char ch=' ')
+	template<class GenerateFunction>
+	inline void WriteArrayByFunction(const int n,GenerateFunction MakeValue,const char ch=' ')
 	{
 		for(int i=1;i<=n;++i)
 		{
@@ -541,6 +557,11 @@ inline void Swap(T &a,T &b)
 	T temp=a;
 	a=b;
 	b=temp;
+}
+template<typename T>
+inline T Abs(const T a)
+{
+	return a<0?-a:a;
 }
 inline std::pair<int,int> UnorderedPair(const int a,const int b)
 {
@@ -608,6 +629,24 @@ public:
 			out_point.push_back(std::vector<int>());
 		}
 	}
+	inline bool IsSameEdge()const
+	{
+		std::set<std::pair<int,int>>edge;
+		for(int i=1;i<out_point.size();++i)
+		{
+			for(auto to:out_point[i])
+			{
+				auto e=std::make_pair(i,to);
+				if(edge.find(e)!=edge.end())
+				{
+					std::cerr<<e.first<<" "<<e.second<<" Same Edge"<<std::endl;
+					return 1;
+				}
+				edge.insert(e);
+			}
+		}
+		return 0;
+	}
 	inline int Size()const
 	{
 		return out_point.size()-1;
@@ -668,6 +707,21 @@ public:
 		new_out_point.swap(out_point);
 		new_out_point.clear();
 	}
+	inline void ErrorWrite()
+	{
+		std::cerr<<"Graph Error"<<std::endl;
+		std::cerr<<"Node: "<<Size()<<std::endl;
+		std::cerr<<"Edge: "<<Edge()<<std::endl;
+		for(int i=1;i<out_point.size();++i)
+		{
+			std::cerr<<i<<": ";
+			for(auto to:out_point[i])
+			{
+				std::cerr<<to<<' ';
+			}
+			std::cerr<<std::endl;
+		}
+	}
 	inline void Write()
 	{
 		if(!out_point.size())
@@ -716,8 +770,8 @@ public:
 			}
 		}
 	}
-	template<class WriteFunction>
-	inline void Write(WriteFunction MakeValue)
+	template<class GenerateFunction>
+	inline void Write(GenerateFunction MakeValue)
 	{
 		if(!out_point.size())
 		{
@@ -1036,8 +1090,24 @@ namespace MD
 		if(n<15)
 		{
 			g=MakeSimpleTree(n/2,Random(0,TREE_KIND),link);
+			if(g.IsSameEdge())
+			{
+				std::cerr<<"MixTree Error Same Edge"<<std::endl;
+				g.ErrorWrite();
+				exit(0);
+			}
 			Graph g1=MakeSimpleTree(n-n/2,Random(0,TREE_KIND),link);
+			if(g1.IsSameEdge())
+			{
+				std::cerr<<"MixTree Error Same Edge 2"<<std::endl;
+				exit(0);
+			}
 			g.Merge(g1,1,1,1);
+			if(g.IsSameEdge())
+			{
+				std::cerr<<"MixTree Error Same Edge 3"<<std::endl;
+				exit(0);
+			}
 			return g;
 		}
 		int n1=n/Max(div,3)+Random(-5,5);
@@ -1076,6 +1146,17 @@ namespace MD
 		Graph res=g;
 		long long edge_num=EdgeNumber(g.Size(),g.link);
 		std::unordered_set<std::pair<int,int>,MD::HashPair>hash;
+		for(int i=1;i<g.Size();++i)
+		{
+			for(auto to:g.out_point[i])
+			{
+				hash.insert(EdgePair(i,to,g.link));
+				if(!g.link)
+				{
+					hash.insert(EdgePair(to,i,g.link));
+				}
+			}
+		}
 		edge_num-=g.Edge();
 		if(add_edge>edge_num)
 		{
@@ -1175,6 +1256,11 @@ namespace MD
 		if(n<15||m<n+50)
 		{
 			g=MixTree(n,link);
+			if(g.IsSameEdge())
+			{
+				std::cerr<<"MixGraphConnect Error Same Edge"<<std::endl;
+				exit(0);
+			}
 			return GraphAddEdge(g,m-(n-1));
 		}
 		int n1=n/Max(div,4)+Random(-5,5);
